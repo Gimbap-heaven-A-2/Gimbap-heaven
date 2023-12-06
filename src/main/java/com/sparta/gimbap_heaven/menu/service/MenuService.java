@@ -9,6 +9,8 @@ import com.sparta.gimbap_heaven.menu.dto.MenuRequestDto;
 import com.sparta.gimbap_heaven.menu.dto.MenuResponseDto;
 import com.sparta.gimbap_heaven.menu.entity.Menu;
 import com.sparta.gimbap_heaven.menu.repository.MenuRepository;
+import com.sparta.gimbap_heaven.user.User;
+import com.sparta.gimbap_heaven.user.UserRoleEnum;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,8 +23,8 @@ public class MenuService {
 		this.menuRepository = menuRepository;
 	}
 
-	public void createMenu(MenuRequestDto menuRequestDto ){ //User user
-		// checkUserRoleAdmin(user);
+	public void createMenu(MenuRequestDto menuRequestDto, User user ){ //User user
+		checkUserRoleAdmin(user);
 		Menu menu = new Menu(menuRequestDto);
 		menuRepository.save(menu);
 	}
@@ -35,27 +37,23 @@ public class MenuService {
 	}
 
 	@Transactional
-	public void updateMenu(Long id,MenuRequestDto menuRequestDto) throws IllegalAccessException { //User user
-		//checkUserRoleAdmin(user)
+	public void updateMenu(Long id,MenuRequestDto menuRequestDto, User user) throws IllegalAccessException { //User user
+		checkUserRoleAdmin(user);
 		Menu menu = findMenu(id);
 		menu.updateMenu(menuRequestDto);
 	}
 
 
-	public void deleteMenu(Long id) throws IllegalAccessException {
-		//checkUserRoleAdmin(user)
+	public void deleteMenu(Long id, User user) throws IllegalAccessException {
+		checkUserRoleAdmin(user);
 		Menu menu = findMenu(id);
 		menuRepository.delete(menu);
 	}
 
-
-
-
-
-	// public void checkUserRoleAdmin(User user){
-	// 	 if(!user.getRole().equals(UserRole.ADMIN))
-	// 		 throw new IllegalAccessException("메뉴를 수정할 권한이 없습니다.");
-	// }
+	public void checkUserRoleAdmin(User user){
+		 if(!user.getRole().equals(UserRoleEnum.ADMIN))
+			 throw new IllegalArgumentException("권한이 없습니다.");
+	}
 
 	public Menu findMenu(Long id) throws IllegalAccessException {
 		return menuRepository.findById(id).orElseThrow(
