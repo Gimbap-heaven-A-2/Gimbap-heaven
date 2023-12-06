@@ -14,9 +14,7 @@ public enum ResponseCode {
 	CREATE_MENU(OK,"메뉴 생성 완료"),
 	UPDATE_MENU(OK,"메뉴 수정 완료"),
 	DELETE_MENU(OK,"메뉴 삭제 완료"),
-	SUCCESS_MENU(OK,"메뉴 조회 완료"),
-
-	CREATE_IN_CART(OK, "장바구니 담기 완료");
+	SUCCESS_MENU(OK,"메뉴 조회 완료");
 
 
 	private final HttpStatus httpStatus;

@@ -29,13 +29,10 @@ public class Order extends BaseTimeEntity {
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
     private List<Basket> baskets = new ArrayList<>();
 
-    @Builder.Default
-    private Double totalPrice = 0.0;
+    private Double totalPrice;
 
-    @Builder.Default
     private Boolean isOrdered = false;
 
     public void addBasket(Basket basket) {
