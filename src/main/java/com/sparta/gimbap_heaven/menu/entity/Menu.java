@@ -1,5 +1,8 @@
 package com.sparta.gimbap_heaven.menu.entity;
 
+import com.sparta.gimbap_heaven.common.entity.BaseTimeEntity;
+import com.sparta.gimbap_heaven.menu.dto.MenuRequestDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "menu")
-public class Menu {
+public class Menu extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -33,6 +36,18 @@ public class Menu {
 		this.category = category;
 		this.name = name;
 		this.price = price;
+	}
+
+	public Menu(MenuRequestDto menuRequestDto){
+		this.category = menuRequestDto.getCategory();
+		this.price = menuRequestDto.getPrice();
+		this.name = menuRequestDto.getName();
+	}
+
+	public void updateMenu(MenuRequestDto menuRequestDto){
+		this.category = menuRequestDto.getCategory();
+		this.price = menuRequestDto.getPrice();
+		this.name = menuRequestDto.getName();
 	}
 
 

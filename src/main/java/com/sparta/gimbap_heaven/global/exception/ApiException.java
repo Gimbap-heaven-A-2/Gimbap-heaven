@@ -1,4 +1,6 @@
-package com.sparta.gimbap_heaven.exception;
+package com.sparta.gimbap_heaven.global.exception;
+
+import com.sparta.gimbap_heaven.global.constant.ErrorCode;
 
 import lombok.Getter;
 
@@ -18,7 +20,5 @@ public class ApiException extends RuntimeException {
         this.errorCode = errorCode;
         this.message = errorCode.getMessage();
     }
-
-
 
 }
