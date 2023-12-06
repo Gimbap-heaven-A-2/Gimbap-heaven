@@ -1,9 +1,12 @@
 package com.sparta.gimbap_heaven.menu.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sparta.gimbap_heaven.menu.dto.MenuRequestDto;
+import com.sparta.gimbap_heaven.menu.dto.MenuResponseDto;
 import com.sparta.gimbap_heaven.menu.entity.Menu;
 import com.sparta.gimbap_heaven.menu.repository.MenuRepository;
 
@@ -24,6 +27,13 @@ public class MenuService {
 		menuRepository.save(menu);
 	}
 
+	public MenuResponseDto getAllMenu(){
+		return new MenuResponseDto(menuRepository.findAll());
+	}
+	public MenuResponseDto getFoodTypeMenu(String type){
+		return new MenuResponseDto(menuRepository.findALlByCategory(type));
+	}
+
 	@Transactional
 	public void updateMenu(Long id,MenuRequestDto menuRequestDto) throws IllegalAccessException { //User user
 		//checkUserRoleAdmin(user)
@@ -37,6 +47,8 @@ public class MenuService {
 		Menu menu = findMenu(id);
 		menuRepository.delete(menu);
 	}
+
+
 
 
 

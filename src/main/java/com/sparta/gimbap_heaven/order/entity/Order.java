@@ -1,15 +1,16 @@
-package com.sparta.gimbap_heaven.order.entity;
+package com.sparta.gimbap_heaven.order.entity;// package com.sparta.gimbap_heaven.order.entity;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.sparta.gimbap_heaven.common.entity.BaseTimeEntity;
+
 import com.sparta.gimbap_heaven.user.User;
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -31,6 +32,7 @@ public class Order extends BaseTimeEntity {
     private List<Basket> baskets = new ArrayList<>();
 
     private Double totalPrice;
+
     private Boolean isOrdered = false;
 
     public void addBasket(Basket basket) {
