@@ -1,11 +1,13 @@
 package com.sparta.gimbap_heaven.global.exception;
 
+import java.util.function.Supplier;
+
 import com.sparta.gimbap_heaven.global.constant.ErrorCode;
 
 import lombok.Getter;
 
 @Getter
-public class ApiException extends RuntimeException {
+public class ApiException extends RuntimeException{
 
     private final ErrorCode errorCode;
 

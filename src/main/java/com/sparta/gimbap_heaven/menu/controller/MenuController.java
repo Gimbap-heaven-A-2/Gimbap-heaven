@@ -33,7 +33,7 @@ public class MenuController {
 
 	@PostMapping("/menus")
 	public ResponseEntity<SuccessResponse> createMenu(@RequestBody MenuRequestDto menuRequestDto,
-													  @AuthenticationPrincipal UserDetailsImpl userDetails){
+													  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
 		menuService.createMenu(menuRequestDto, userDetails.getUser());
 		return ResponseEntity.status(CREATE_MENU.getHttpStatus().value())
@@ -61,7 +61,7 @@ public class MenuController {
 	@PutMapping("/menus/{menuId}")
 	public ResponseEntity<SuccessResponse> updateMenu(@PathVariable(name = "menuId") Long menuId,
 													  @RequestBody MenuRequestDto menuRequestDto,
-													  @AuthenticationPrincipal UserDetailsImpl userDetails) throws IllegalAccessException {
+													  @AuthenticationPrincipal UserDetailsImpl userDetails){
 		menuService.updateMenu(menuId,menuRequestDto, userDetails.getUser());
 		return ResponseEntity.status(UPDATE_MENU.getHttpStatus())
 			.body(new SuccessResponse(UPDATE_MENU));
@@ -69,7 +69,7 @@ public class MenuController {
 
 	@DeleteMapping("/menus/{menuId}")
 	public ResponseEntity<SuccessResponse> deleteMenu(@PathVariable(name = "menuId")Long menuId,
-													  @AuthenticationPrincipal UserDetailsImpl userDetails) throws IllegalAccessException {
+													  @AuthenticationPrincipal UserDetailsImpl userDetails){
 		menuService.deleteMenu(menuId, userDetails.getUser());
 
 		return ResponseEntity.status(DELETE_MENU.getHttpStatus())

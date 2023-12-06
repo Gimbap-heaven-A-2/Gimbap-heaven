@@ -13,13 +13,15 @@ public enum ErrorCode {
     // 예외처리를 위해 만든 클래스지만 잘 모릅니다.
 
     // System Exception
-    INVALID_USER(HttpStatus.BAD_REQUEST,"일치하는 유저정보가 없습니다."),
+    INVALID_USER(HttpStatus.FORBIDDEN,"권한이 없습니다."),
 
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "일치하는 토큰이 없습니다."),
 
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST,"잘못된 입력값입니다."),
 
     INVALID_VALUE(HttpStatus.BAD_REQUEST,"잘못된 입력값입니다."),
+
+    INVALID_MENU(HttpStatus.BAD_REQUEST,"찾으시는 메뉴정보가 없습니다."),
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러"),
 

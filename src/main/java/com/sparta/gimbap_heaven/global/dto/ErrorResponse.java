@@ -10,7 +10,6 @@ import lombok.Generated;
 @Data
 @Generated
 public class ErrorResponse {
-    private HttpStatus httpStatus;
     private int status;
     private String message;
 
@@ -23,7 +22,7 @@ public class ErrorResponse {
         this.message = message;
     }
     public ErrorResponse(HttpStatus httpStatus, String message) {
-        this.httpStatus = httpStatus;
+        this.status = httpStatus.value();
         this.message = message;
     }
 

@@ -16,7 +16,7 @@ public class UserService {
 
     // ADMIN_TOKEN
     @Value("${jwt.adminToken}")
-    private static String ADMIN_TOKEN ;
+    private String ADMIN_TOKEN ;
 
 
     public void signup(SignupRequestDto requestDto) {
