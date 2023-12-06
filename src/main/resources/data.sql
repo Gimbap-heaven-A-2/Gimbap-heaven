@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS menu (
-                                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                    category VARCHAR(255),
-                                    name VARCHAR(255),
-                                    price DOUBLE
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(255),
+    name VARCHAR(255),
+    price DOUBLE
 );
 
 INSERT INTO menu (category, name, price)
