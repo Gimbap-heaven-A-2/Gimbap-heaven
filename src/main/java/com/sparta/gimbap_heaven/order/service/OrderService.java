@@ -48,7 +48,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponseDto updateInCart(BasketRequestDto requestDto, User user) {
+    public void updateInCart(BasketRequestDto requestDto, User user) {
         Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseThrow(
                 () -> new ApiException(ErrorCode.INVALID_CART)
         );
@@ -62,7 +62,37 @@ public class OrderService {
                 order.deleteBasket(basket);
                 basket.updateCount(requestDto);
                 order.addBasket(basket);
-                return OrderResponseDto.of(order);
+                return;
+            }
+        }
+
+        throw new ApiException(ErrorCode.INVALID_MENU_IN_CART);
+    }
+
+    @Transactional
+    public void deleteCart(User user) {
+        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseThrow(
+                () -> new ApiException(ErrorCode.INVALID_CART)
+        );
+
+        orderRepository.delete(order);
+    }
+
+    @Transactional
+    public void deleteMenuInCart(Long menuId, User user) {
+        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseThrow(
+                () -> new ApiException(ErrorCode.INVALID_CART)
+        );
+
+        menuRepository.findById(menuId).orElseThrow(
+                () -> new ApiException(ErrorCode.INVALID_MENU)
+        );
+
+        for (Basket basket : order.getBaskets()) {
+            if (Objects.equals(basket.getMenu().getId(), menuId)) {
+                order.deleteBasket(basket);
+                basketRepository.delete(basket);
+                return;
             }
         }
 
