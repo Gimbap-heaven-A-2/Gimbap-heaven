@@ -1,4 +1,4 @@
-package com.sparta.gimbap_heaven.user;
+package com.sparta.gimbap_heaven.user.Entity;
 
 
 import jakarta.persistence.*;

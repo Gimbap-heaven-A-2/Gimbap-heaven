@@ -20,4 +20,3 @@ spring:
 jwt:
   secret: ${JWT_SECRET_KEY}
   adminToken: ${JWT_ADMIN_TOKEN}
-

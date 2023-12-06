@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sparta.gimbap_heaven.common.entity.BaseTimeEntity;
 
-import com.sparta.gimbap_heaven.user.User;
+import com.sparta.gimbap_heaven.user.Entity.User;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -41,5 +41,15 @@ public class Order extends BaseTimeEntity {
     public void addBasket(Basket basket) {
         this.baskets.add(basket);
         this.totalPrice += basket.getPrice();
+    }
+
+
+    public void deleteBasket(Basket basket) {
+        this.totalPrice -= basket.getPrice();
+        this.baskets.remove(basket);
+    }
+
+    public void updateIsOrdered(boolean isOrdered) {
+        this.isOrdered = isOrdered;
     }
 }

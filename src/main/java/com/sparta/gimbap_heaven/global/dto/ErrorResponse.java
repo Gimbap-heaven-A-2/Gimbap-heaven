@@ -1,5 +1,6 @@
 package com.sparta.gimbap_heaven.global.dto;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import com.sparta.gimbap_heaven.global.constant.ErrorCode;
@@ -9,6 +10,7 @@ import lombok.Generated;
 
 @Data
 @Generated
+@Getter
 public class ErrorResponse {
     private int status;
     private String message;
