@@ -2,7 +2,6 @@ package com.sparta.gimbap_heaven.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.gimbap_heaven.jwt.JwtUtil;
-import com.sparta.gimbap_heaven.jwt.RefreshToken;
 import com.sparta.gimbap_heaven.jwt.RefreshTokenRepository;
 import com.sparta.gimbap_heaven.user.LoginRequestDto;
 import com.sparta.gimbap_heaven.user.UserRoleEnum;
@@ -56,7 +55,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         String accessToken = jwtUtil.createAccessToken(username, role);
-        String refreshToken = jwtUtil.createRefreshToken(username);
+        String refreshToken = jwtUtil.createRefreshToken(username, role);
 
         // RefreshToken DB에 저장
         jwtUtil.saveRefreshJwtToDB(refreshToken, username);
@@ -70,6 +69,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(200);
         response.setCharacterEncoding("utf-8");
         PrintWriter writer = response.getWriter();
+        writer.println("200 Ok");
         writer.println("로그인 성공!");
     }
 

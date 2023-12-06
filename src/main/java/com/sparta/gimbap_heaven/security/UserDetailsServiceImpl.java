@@ -3,6 +3,7 @@ package com.sparta.gimbap_heaven.security;
 
 import com.sparta.gimbap_heaven.user.User;
 import com.sparta.gimbap_heaven.user.UserRepository;
+import com.sparta.gimbap_heaven.user.UserRoleEnum;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -1,9 +1,11 @@
 package com.sparta.gimbap_heaven.user;
 
+import com.sparta.gimbap_heaven.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -16,7 +18,7 @@ public class UserService {
 
     // ADMIN_TOKEN
     @Value("${jwt.adminToken}")
-    private static String ADMIN_TOKEN ;
+    private String ADMIN_TOKEN ;
 
 
     public void signup(SignupRequestDto requestDto) {
@@ -49,4 +51,19 @@ public class UserService {
         User user = new User(username, password, email, role);
         userRepository.save(user);
     }
+
+    @Transactional
+    public void putProfile(updateProfileRequestDto profileRequestDto, UserDetailsImpl userDetails) {
+        // 사용자 ID로 레포지토리에서 사용자 정보 조회
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 사용자 정보업데이트
+        user.setEmail(profileRequestDto.getEmail());
+        user.setIntro(profileRequestDto.getIntro());
+
+        // 사용자 정보 저장
+        userRepository.save(user);
+    }
+
 }
