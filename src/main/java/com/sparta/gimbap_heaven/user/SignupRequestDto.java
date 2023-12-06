@@ -1,6 +1,5 @@
 package com.sparta.gimbap_heaven.user;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -17,10 +16,11 @@ public class SignupRequestDto {
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9]{8,15}$", message = "비밀번호는 8자 이상 15자 이하 영대소문자, 숫자만 가능합니다.")
     private String password;
-    @Email
+    @NotBlank
+    @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$", message = "이메일 형식에 맞게 작성해주세요.")
     private String email;
     private boolean admin = false;
-    private String adminToken = "";
+    private String adminToken;
 
 
 
