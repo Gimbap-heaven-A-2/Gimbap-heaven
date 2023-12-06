@@ -1,11 +1,12 @@
 package com.sparta.gimbap_heaven.order.dto;
 
-import com.sparta.gimbap_heaven.order.entity.Basket;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class BasketRequestDto {
 
     @NotBlank
