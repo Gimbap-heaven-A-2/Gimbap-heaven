@@ -63,29 +63,40 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<ErrorResponse> illegalArgumentExceptionHandler(IllegalArgumentException ex) {
+        log.error(ex.getMessage());
+        log.info(INVALID_VALUE.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(
+                new ErrorResponse(
+                        INVALID_VALUE.getHttpStatus().value(),
+                        INVALID_VALUE.getMessage())
+        );
+    }
 
-//    // 이외 에러들
-//    @ExceptionHandler(RuntimeException.class)
-//    public ResponseEntity<ErrorResponse> handleException(RuntimeException e) {
-//        log.error("RuntimeException", e);
-//        ErrorResponse response = e.getMessage().isEmpty()?
-//                new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR):
-//                new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus().value(),e.getMessage());
-//        return ResponseEntity.status(response.getStatus()).body(response);
-//    }
-//
-//    @ExceptionHandler(ApiException.class)
-//    protected ResponseEntity<Object> handleCustomException(ApiException ex) {
-//        ErrorCode errorCode = ex.getErrorCode();
-//        String message = ex.getMessage();
-//        if (!StringUtils.hasText(message)) {
-//            message = errorCode.getMessage();
-//        }
-//        log.error("handleCustomException throw CustomException : {}", errorCode);
-//        return ResponseEntity.status(errorCode.getHttpStatus()).body(
-//            new ErrorResponse(errorCode.getHttpStatus(), message)
-//        );
-//    }
+
+    // 이외 에러들
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleException(RuntimeException e) {
+        log.error("RuntimeException", e);
+        ErrorResponse response = e.getMessage().isEmpty()?
+                new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR):
+                new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus().value(),e.getMessage());
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(ApiException.class)
+    protected ResponseEntity<Object> handleCustomException(ApiException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
+        String message = ex.getMessage();
+        if (!StringUtils.hasText(message)) {
+            message = errorCode.getMessage();
+        }
+        log.error("handleCustomException throw CustomException : {}", errorCode);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(
+            new ErrorResponse(errorCode.getHttpStatus(), message)
+        );
+    }
 
 
 

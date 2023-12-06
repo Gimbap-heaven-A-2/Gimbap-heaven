@@ -1,7 +1,5 @@
 package com.sparta.gimbap_heaven.menu.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,8 +7,8 @@ import com.sparta.gimbap_heaven.menu.dto.MenuRequestDto;
 import com.sparta.gimbap_heaven.menu.dto.MenuResponseDto;
 import com.sparta.gimbap_heaven.menu.entity.Menu;
 import com.sparta.gimbap_heaven.menu.repository.MenuRepository;
-import com.sparta.gimbap_heaven.user.User;
-import com.sparta.gimbap_heaven.user.UserRoleEnum;
+import com.sparta.gimbap_heaven.user.Entity.User;
+import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
 
 import lombok.extern.slf4j.Slf4j;
 
