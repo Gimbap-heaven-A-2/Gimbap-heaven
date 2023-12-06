@@ -1,6 +1,5 @@
 package com.sparta.gimbap_heaven.order.controller;
 
-import com.sparta.gimbap_heaven.global.constant.ResponseCode;
 import com.sparta.gimbap_heaven.global.dto.SuccessResponse;
 import com.sparta.gimbap_heaven.order.dto.BasketRequestDto;
 import com.sparta.gimbap_heaven.order.service.OrderService;
@@ -46,5 +45,10 @@ public class OrderController {
                                                             @PathVariable Long menu_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         orderService.deleteMenuInCart(order_id, menu_id, userDetails.getUser());
         return ResponseEntity.status(DELETE_BASKET_IN_CART.getHttpStatus()).body(new SuccessResponse(DELETE_BASKET_IN_CART));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.status(SUCCESS_BASKET_IN_CART.getHttpStatus()).body(new SuccessResponse(SUCCESS_BASKET_IN_CART, orderService.getCart(userDetails.getUser())));
     }
 }

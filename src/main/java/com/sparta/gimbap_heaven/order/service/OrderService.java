@@ -106,8 +106,24 @@ public class OrderService {
         throw new ApiException(ErrorCode.INVALID_MENU_IN_CART);
     }
 
+    public OrderResponseDto getCart(User user) {
+        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseThrow(
+                () -> new ApiException(ErrorCode.INVALID_CART)
+        );
+
+        checkUser(user, order);
+
+        return OrderResponseDto.of(order);
+    }
+
     private static void checkUserOrRole(User user, Order order) {
         if (!order.getUser().getUsername().equals(user.getUsername()) || !user.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new ApiException(ErrorCode.INVALID_AUTHORIZATION);
+        }
+    }
+
+    private void checkUser(User user, Order order) {
+        if (!order.getUser().getUsername().equals(user.getUsername())) {
             throw new ApiException(ErrorCode.INVALID_AUTHORIZATION);
         }
     }
