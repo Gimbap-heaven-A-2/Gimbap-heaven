@@ -1,0 +1,31 @@
+package com.sparta.gimbap_heaven.global.dto;
+
+import org.springframework.http.HttpStatus;
+
+import com.sparta.gimbap_heaven.global.constant.ErrorCode;
+
+import lombok.Data;
+import lombok.Generated;
+
+@Data
+@Generated
+public class ErrorResponse {
+    private HttpStatus httpStatus;
+    private int status;
+    private String message;
+
+    public ErrorResponse(ErrorCode errorCode){
+        this.status = errorCode.getHttpStatus().value();
+        this.message = errorCode.getMessage();
+    }
+    public ErrorResponse(int status, String message) {
+        this.status = status;
+        this.message = message;
+    }
+    public ErrorResponse(HttpStatus httpStatus, String message) {
+        this.httpStatus = httpStatus;
+        this.message = message;
+    }
+
+
+}

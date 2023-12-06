@@ -1,6 +1,6 @@
-package com.sparta.gimbap_heaven.exception;
+package com.sparta.gimbap_heaven.global.exception;
 
-import static com.sparta.gimbap_heaven.exception.ErrorCode.*;
+import static com.sparta.gimbap_heaven.global.constant.ErrorCode.*;
 
 import java.util.HashMap;
 
@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.sparta.gimbap_heaven.global.constant.ErrorCode;
+import com.sparta.gimbap_heaven.global.dto.ErrorResponse;
+
 import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +37,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse response =e.getMessage().isEmpty()?
                 new ErrorResponse(ErrorCode.INVALID_USER):
                 new ErrorResponse(ErrorCode.INVALID_USER.getHttpStatus(),e.getMessage());
-        return new ResponseEntity<>(response, response.getStatus());
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
@@ -47,7 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .forEach(error -> errors.put(((FieldError)error).getField(), error.getDefaultMessage()));
 
         return ResponseEntity.status(INVALID_VALUE.getHttpStatus()).body(
-            new ErrorResponse(INVALID_VALUE.getHttpStatus(), INVALID_VALUE.getMessage())
+            new ErrorResponse(INVALID_VALUE.getHttpStatus().value(), INVALID_VALUE.getMessage())
         );
     }
     @Override
@@ -55,7 +58,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-            new ErrorResponse(INVALID_VALUE.getHttpStatus(),
+            new ErrorResponse(INVALID_VALUE.getHttpStatus().value(),
                 INVALID_VALUE.getMessage() + "누락된 파라미터" + ex.getParameterName())
         );
     }
@@ -67,8 +70,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("RuntimeException", e);
         ErrorResponse response = e.getMessage().isEmpty()?
                 new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR):
-                new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus(),e.getMessage());
-        return new ResponseEntity<>(response, response.getStatus());
+                new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus().value(),e.getMessage());
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @ExceptionHandler(ApiException.class)

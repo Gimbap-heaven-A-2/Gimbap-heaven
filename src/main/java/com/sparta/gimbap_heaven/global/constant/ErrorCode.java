@@ -1,4 +1,4 @@
-package com.sparta.gimbap_heaven.exception;
+package com.sparta.gimbap_heaven.global.constant;
 
 import org.springframework.http.HttpStatus;
 
