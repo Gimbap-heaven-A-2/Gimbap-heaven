@@ -27,14 +27,14 @@ public class MenuController {
 	public ResponseEntity<SuccessResponse> createMenu(@RequestBody MenuRequestDto menuRequestDto){ //@AuthenticationPrincipal UserImpl
 
 		menuService.createMenu(menuRequestDto); // userImpl.getUser();
-		return ResponseEntity.ok(new SuccessResponse(CREATE_MENU));
+		return ResponseEntity.status(CREATE_MENU.getHttpStatus()).body(new SuccessResponse(CREATE_MENU));
 	}
 
 	@PutMapping("/menus/{menuId}")
 	public ResponseEntity<SuccessResponse> updateMenu(@PathVariable(name = "menuId") Long menuId,
 													@RequestBody MenuRequestDto menuRequestDto) throws IllegalAccessException { //@AuthenticationPrincipal UserImpl
 		menuService.updateMenu(menuId,menuRequestDto);
-		return ResponseEntity.ok(new SuccessResponse(UPDATE_MENU));
+		return ResponseEntity.status(UPDATE_MENU.getHttpStatus()).body(new SuccessResponse(UPDATE_MENU));
 	}
 
 	@DeleteMapping("/menus/{menuId}")
