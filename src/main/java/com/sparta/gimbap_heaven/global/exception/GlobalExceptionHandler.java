@@ -30,16 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @Generated
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    // 잘못된 유저 접근 에러
-    @ExceptionHandler(IllegalAccessException.class)
-    protected ResponseEntity<ErrorResponse> handleAccessException(IllegalAccessException e) {
-        log.error("IllegalAccessException", e);
-        ErrorResponse response =e.getMessage().isEmpty()?
-                new ErrorResponse(ErrorCode.INVALID_USER):
-                new ErrorResponse(ErrorCode.INVALID_USER.getHttpStatus(),e.getMessage());
-        return ResponseEntity.status(response.getStatus()).body(response);
-    }
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
         HttpHeaders headers, HttpStatusCode status, WebRequest request) {
@@ -80,8 +70,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(RuntimeException e) {
         log.error("RuntimeException", e);
         ErrorResponse response = e.getMessage().isEmpty()?
-                new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR):
-                new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus().value(),e.getMessage());
+                new ErrorResponse(INTERNAL_SERVER_ERROR):
+                new ErrorResponse(INTERNAL_SERVER_ERROR.getHttpStatus().value(),e.getMessage());
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
@@ -94,7 +84,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
         log.error("handleCustomException throw CustomException : {}", errorCode);
         return ResponseEntity.status(errorCode.getHttpStatus()).body(
-            new ErrorResponse(errorCode.getHttpStatus(), message)
+            new ErrorResponse(errorCode.getHttpStatus().value(), message)
         );
     }
 

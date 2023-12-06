@@ -13,7 +13,7 @@ public enum ErrorCode {
     // 예외처리를 위해 만든 클래스지만 잘 모릅니다.
 
     // System Exception
-    INVALID_USER(HttpStatus.BAD_REQUEST,"일치하는 유저정보가 없습니다."),
+    INVALID_USER(HttpStatus.FORBIDDEN,"권한이 없습니다."),
 
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "일치하는 토큰이 없습니다."),
 

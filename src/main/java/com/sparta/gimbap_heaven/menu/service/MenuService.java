@@ -1,8 +1,11 @@
 package com.sparta.gimbap_heaven.menu.service;
 
+
+import static com.sparta.gimbap_heaven.global.constant.ErrorCode.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sparta.gimbap_heaven.global.exception.ApiException;
 import com.sparta.gimbap_heaven.menu.dto.MenuRequestDto;
 import com.sparta.gimbap_heaven.menu.dto.MenuResponseDto;
 import com.sparta.gimbap_heaven.menu.entity.Menu;
@@ -21,7 +24,7 @@ public class MenuService {
 		this.menuRepository = menuRepository;
 	}
 
-	public void createMenu(MenuRequestDto menuRequestDto, User user ){ //User user
+	public void createMenu(MenuRequestDto menuRequestDto, User user )  {
 		checkUserRoleAdmin(user);
 		Menu menu = new Menu(menuRequestDto);
 		menuRepository.save(menu);
@@ -35,27 +38,27 @@ public class MenuService {
 	}
 
 	@Transactional
-	public void updateMenu(Long id,MenuRequestDto menuRequestDto, User user) throws IllegalAccessException { //User user
+	public void updateMenu(Long id,MenuRequestDto menuRequestDto, User user)  {
 		checkUserRoleAdmin(user);
 		Menu menu = findMenu(id);
 		menu.updateMenu(menuRequestDto);
 	}
 
 
-	public void deleteMenu(Long id, User user) throws IllegalAccessException {
+	public void deleteMenu(Long id, User user) {
 		checkUserRoleAdmin(user);
 		Menu menu = findMenu(id);
 		menuRepository.delete(menu);
 	}
 
-	public void checkUserRoleAdmin(User user){
+	public void checkUserRoleAdmin(User user) {
 		 if(!user.getRole().equals(UserRoleEnum.ADMIN))
-			 throw new IllegalArgumentException("권한이 없습니다.");
+			 throw new ApiException(INVALID_USER);
 	}
 
-	public Menu findMenu(Long id) throws IllegalAccessException {
+	public Menu findMenu(Long id) {
 		return menuRepository.findById(id).orElseThrow(
-			IllegalAccessException::new
+			()->  new ApiException(INVALID_MENU)
 		);
 	}
 
