@@ -42,4 +42,10 @@ public class Order extends BaseTimeEntity {
         this.baskets.add(basket);
         this.totalPrice += basket.getPrice();
     }
+
+
+    public void deleteBasket(Basket basket) {
+        this.totalPrice -= basket.getPrice();
+        this.baskets.remove(basket);
+    }
 }

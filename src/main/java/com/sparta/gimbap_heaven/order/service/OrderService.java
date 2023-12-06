@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -43,5 +45,27 @@ public class OrderService {
 
         order.addBasket(basket);
         orderRepository.save(order);
+    }
+
+    @Transactional
+    public OrderResponseDto updateInCart(BasketRequestDto requestDto, User user) {
+        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseThrow(
+                () -> new ApiException(ErrorCode.INVALID_CART)
+        );
+
+        menuRepository.findById(requestDto.getMenu_id()).orElseThrow(
+                () -> new ApiException(ErrorCode.INVALID_MENU)
+        );
+
+        for (Basket basket : order.getBaskets()) {
+            if (Objects.equals(basket.getMenu().getId(), requestDto.getMenu_id())) {
+                order.deleteBasket(basket);
+                basket.updateCount(requestDto);
+                order.addBasket(basket);
+                return OrderResponseDto.of(order);
+            }
+        }
+
+        throw new ApiException(ErrorCode.INVALID_MENU_IN_CART);
     }
 }
