@@ -11,6 +11,7 @@ import com.sparta.gimbap_heaven.order.entity.Order;
 import com.sparta.gimbap_heaven.order.repository.BasketRepository;
 import com.sparta.gimbap_heaven.order.repository.OrderRepository;
 import com.sparta.gimbap_heaven.user.User;
+import com.sparta.gimbap_heaven.user.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,10 +49,12 @@ public class OrderService {
     }
 
     @Transactional
-    public void updateInCart(BasketRequestDto requestDto, User user) {
-        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseThrow(
+    public void updateInCart(Long orderId, BasketRequestDto requestDto, User user) {
+        Order order = orderRepository.findByIdAndIsOrdered(orderId, false).orElseThrow(
                 () -> new ApiException(ErrorCode.INVALID_CART)
         );
+
+        checkUserOrRole(user, order);
 
         menuRepository.findById(requestDto.getMenu_id()).orElseThrow(
                 () -> new ApiException(ErrorCode.INVALID_MENU)
@@ -69,20 +72,24 @@ public class OrderService {
         throw new ApiException(ErrorCode.INVALID_MENU_IN_CART);
     }
 
+
     @Transactional
-    public void deleteCart(User user) {
-        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseThrow(
+    public void deleteCart(Long orderId, User user) {
+        Order order = orderRepository.findByIdAndIsOrdered(orderId, false).orElseThrow(
                 () -> new ApiException(ErrorCode.INVALID_CART)
         );
+
+        checkUserOrRole(user, order);
 
         orderRepository.delete(order);
     }
 
     @Transactional
-    public void deleteMenuInCart(Long menuId, User user) {
-        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseThrow(
+    public void deleteMenuInCart(Long orderId, Long menuId, User user) {
+        Order order = orderRepository.findByIdAndIsOrdered(orderId, false).orElseThrow(
                 () -> new ApiException(ErrorCode.INVALID_CART)
         );
+        checkUserOrRole(user, order);
 
         menuRepository.findById(menuId).orElseThrow(
                 () -> new ApiException(ErrorCode.INVALID_MENU)
@@ -97,5 +104,11 @@ public class OrderService {
         }
 
         throw new ApiException(ErrorCode.INVALID_MENU_IN_CART);
+    }
+
+    private static void checkUserOrRole(User user, Order order) {
+        if (!order.getUser().getUsername().equals(user.getUsername()) || !user.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new ApiException(ErrorCode.INVALID_AUTHORIZATION);
+        }
     }
 }

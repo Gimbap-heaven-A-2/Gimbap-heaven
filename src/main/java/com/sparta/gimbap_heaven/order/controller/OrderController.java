@@ -26,21 +26,25 @@ public class OrderController {
         return ResponseEntity.status(CREATE_BASKET_IN_CART.getHttpStatus()).body(new SuccessResponse(CREATE_BASKET_IN_CART));
     }
 
-    @PutMapping
-    public ResponseEntity<SuccessResponse> updateInCart(@RequestBody @Valid BasketRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        orderService.updateInCart(requestDto, userDetails.getUser());
+    @PutMapping("/{order_id}")
+    public ResponseEntity<SuccessResponse> updateInCart(@PathVariable Long order_id,
+                                                        @RequestBody @Valid BasketRequestDto requestDto,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        orderService.updateInCart(order_id, requestDto, userDetails.getUser());
         return ResponseEntity.status(UPDATE_BASKET_IN_CART.getHttpStatus()).body(new SuccessResponse(UPDATE_BASKET_IN_CART));
     }
 
-    @DeleteMapping
-    public ResponseEntity<SuccessResponse> deleteCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        orderService.deleteCart(userDetails.getUser());
+    @DeleteMapping("/{order_id}")
+    public ResponseEntity<SuccessResponse> deleteCart(@PathVariable Long order_id,
+                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        orderService.deleteCart(order_id, userDetails.getUser());
         return ResponseEntity.status(DELETE_CART.getHttpStatus()).body(new SuccessResponse(DELETE_CART));
     }
 
-    @DeleteMapping("/{menu_id}")
-    public ResponseEntity<SuccessResponse> deleteMenuInCart(@PathVariable Long menu_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        orderService.deleteMenuInCart(menu_id, userDetails.getUser());
+    @DeleteMapping("/{order_id}/{menu_id}")
+    public ResponseEntity<SuccessResponse> deleteMenuInCart(@PathVariable Long order_id,
+                                                            @PathVariable Long menu_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        orderService.deleteMenuInCart(order_id, menu_id, userDetails.getUser());
         return ResponseEntity.status(DELETE_BASKET_IN_CART.getHttpStatus()).body(new SuccessResponse(DELETE_BASKET_IN_CART));
     }
 }
