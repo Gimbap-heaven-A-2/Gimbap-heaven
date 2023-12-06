@@ -20,7 +20,8 @@ public enum ResponseCode {
 	UPDATE_BASKET_IN_CART(OK, "장바구니 내 메뉴 수정 완료"),
 	DELETE_BASKET_IN_CART(OK, "장바구니 내 메뉴 삭제 완료"),
 	DELETE_CART(OK, "장바구니 전체 삭제 완료"),
-	SUCCESS_BASKET_IN_CART(OK, "장바구니 조회 완료");
+	SUCCESS_BASKET_IN_CART(OK, "장바구니 조회 완료"),
+	DONE_ORDERED(OK, "주문 완료");
 
 
 	private final HttpStatus httpStatus;

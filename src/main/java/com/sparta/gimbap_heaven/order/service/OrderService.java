@@ -116,6 +116,17 @@ public class OrderService {
         return OrderResponseDto.of(order);
     }
 
+    @Transactional
+    public void updateCartIsOrdered(Long orderId, User user) {
+        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseThrow(
+                () -> new ApiException(ErrorCode.INVALID_CART)
+        );
+
+        checkUser(user, order);
+
+        order.updateIsOrdered(true);
+    }
+
     private static void checkUserOrRole(User user, Order order) {
         if (!order.getUser().getUsername().equals(user.getUsername()) || !user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new ApiException(ErrorCode.INVALID_AUTHORIZATION);

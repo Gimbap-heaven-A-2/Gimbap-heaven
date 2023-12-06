@@ -51,4 +51,10 @@ public class OrderController {
     public ResponseEntity<?> getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(SUCCESS_BASKET_IN_CART.getHttpStatus()).body(new SuccessResponse(SUCCESS_BASKET_IN_CART, orderService.getCart(userDetails.getUser())));
     }
+
+    @PutMapping("/{order_id}/ordered")
+    public ResponseEntity<SuccessResponse> setCartIsOrdered(@PathVariable Long order_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        orderService.updateCartIsOrdered(order_id, userDetails.getUser());
+        return ResponseEntity.status(DONE_ORDERED.getHttpStatus()).body(new SuccessResponse(DONE_ORDERED));
+    }
 }

@@ -48,4 +48,8 @@ public class Order extends BaseTimeEntity {
         this.totalPrice -= basket.getPrice();
         this.baskets.remove(basket);
     }
+
+    public void updateIsOrdered(boolean isOrdered) {
+        this.isOrdered = isOrdered;
+    }
 }
