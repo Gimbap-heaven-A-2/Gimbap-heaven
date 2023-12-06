@@ -1,7 +1,10 @@
-package com.sparta.gimbap_heaven.user;
+package com.sparta.gimbap_heaven.user.controller;
 
 import com.sparta.gimbap_heaven.global.dto.SuccessResponse;
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
+import com.sparta.gimbap_heaven.user.service.UserService;
+import com.sparta.gimbap_heaven.user.dto.SignupRequestDto;
+import com.sparta.gimbap_heaven.user.dto.updateProfileRequestDto;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +41,12 @@ public class UserController {
     }
 
     @PutMapping("/users/{user_id}")
-    public ResponseEntity<SuccessResponse> editProfile(@Valid @RequestBody updateProfileRequestDto profileRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails, BindingResult bindingResult) {
+    public ResponseEntity<SuccessResponse> editProfile(
+            @PathVariable Long user_id,
+            @Valid @RequestBody updateProfileRequestDto profileRequestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            BindingResult bindingResult) {
+
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if(fieldErrors.size() > 0) {
@@ -48,7 +56,7 @@ public class UserController {
             throw new ValidationException("이메일 양식이 올바르지 않습니다.");
         }
 
-        userService.putProfile(profileRequestDto, userDetails);
+        userService.putProfile(user_id, profileRequestDto, userDetails);
         return ResponseEntity.ok(new SuccessResponse(200, "내 정보 수정 완료"));
     }
 

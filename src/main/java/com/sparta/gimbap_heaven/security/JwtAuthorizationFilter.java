@@ -2,7 +2,7 @@ package com.sparta.gimbap_heaven.security;
 
 
 import com.sparta.gimbap_heaven.jwt.JwtUtil;
-import com.sparta.gimbap_heaven.user.UserRoleEnum;
+import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

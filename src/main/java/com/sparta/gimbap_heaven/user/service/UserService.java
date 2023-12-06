@@ -1,6 +1,11 @@
-package com.sparta.gimbap_heaven.user;
+package com.sparta.gimbap_heaven.user.service;
 
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
+import com.sparta.gimbap_heaven.user.Entity.User;
+import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
+import com.sparta.gimbap_heaven.user.dto.SignupRequestDto;
+import com.sparta.gimbap_heaven.user.dto.updateProfileRequestDto;
+import com.sparta.gimbap_heaven.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,17 +58,25 @@ public class UserService {
     }
 
     @Transactional
-    public void putProfile(updateProfileRequestDto profileRequestDto, UserDetailsImpl userDetails) {
+    public void putProfile(Long user_id, updateProfileRequestDto profileRequestDto, UserDetailsImpl userDetails) {
         // 사용자 ID로 레포지토리에서 사용자 정보 조회
-        User user = userRepository.findByUsername(userDetails.getUsername())
+        User userById = userRepository.findById(user_id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // 사용자 정보업데이트
-        user.setEmail(profileRequestDto.getEmail());
-        user.setIntro(profileRequestDto.getIntro());
+
+        // 사용자 이름으로 레포지토리에서 사용자 정보 조회
+        User userByusername = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+
+        if (userById.equals(userByusername)) {
+            // 사용자 정보업데이트
+            userById.setEmail(profileRequestDto.getEmail());
+            userById.setIntro(profileRequestDto.getIntro());
+        }
 
         // 사용자 정보 저장
-        userRepository.save(user);
+        userRepository.save(userById);
     }
 
 }

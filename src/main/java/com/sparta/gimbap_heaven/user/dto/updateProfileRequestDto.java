@@ -1,4 +1,4 @@
-package com.sparta.gimbap_heaven.user;
+package com.sparta.gimbap_heaven.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;

@@ -1,4 +1,4 @@
-package com.sparta.gimbap_heaven.user;
+package com.sparta.gimbap_heaven.user.Entity;
 
 public enum UserRoleEnum {
     USER(Authority.USER),  // 사용자 권한

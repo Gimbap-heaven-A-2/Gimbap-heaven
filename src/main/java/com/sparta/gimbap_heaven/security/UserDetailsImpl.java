@@ -1,7 +1,7 @@
 package com.sparta.gimbap_heaven.security;
 
-import com.sparta.gimbap_heaven.user.User;
-import com.sparta.gimbap_heaven.user.UserRoleEnum;
+import com.sparta.gimbap_heaven.user.Entity.User;
+import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
