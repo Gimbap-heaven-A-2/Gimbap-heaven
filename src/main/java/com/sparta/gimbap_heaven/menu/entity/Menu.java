@@ -1,5 +1,6 @@
 package com.sparta.gimbap_heaven.menu.entity;
 
+import com.sparta.gimbap_heaven.common.entity.BaseTimeEntity;
 import com.sparta.gimbap_heaven.menu.dto.MenuRequestDto;
 
 import jakarta.persistence.Column;
@@ -17,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "menu")
-public class Menu {
+public class Menu extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
