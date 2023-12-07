@@ -2,11 +2,8 @@ package com.sparta.gimbap_heaven.user.controller;
 
 import com.sparta.gimbap_heaven.global.dto.SuccessResponse;
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
-import com.sparta.gimbap_heaven.user.dto.UpdateMoneyRequestDto;
-import com.sparta.gimbap_heaven.user.dto.UserResponseDto;
+import com.sparta.gimbap_heaven.user.dto.*;
 import com.sparta.gimbap_heaven.user.service.UserService;
-import com.sparta.gimbap_heaven.user.dto.SignupRequestDto;
-import com.sparta.gimbap_heaven.user.dto.updateProfileRequestDto;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +80,15 @@ public class UserController {
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
         int money = (int) userService.updateMoney(id,requestDto,userDetails.getUser());
         return ResponseEntity.status(UPDATE_MONEY.getHttpStatus()).body(new SuccessResponse(UPDATE_MONEY," Money : " + money/10 + "만 " + (money%10)*1000 +"원"));
+    }
+
+    @PutMapping("/users/{id}/password")
+    public ResponseEntity<SuccessResponse> updatePassword(@PathVariable Long id,
+                                                          @RequestBody PasswordRequestDto requestDto,
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
+        userService.updatePassword(id,requestDto,userDetails.getUser());
+        return ResponseEntity.status(UPDATE_SUCCESS_PASSWORD.getHttpStatus()).body(new SuccessResponse(UPDATE_SUCCESS_PASSWORD));
+
     }
 
 }

@@ -53,7 +53,9 @@ public enum ErrorCode {
 
     INVALID_USER_CHECK(HttpStatus.BAD_REQUEST,"사용자가 아닙니다"),
 
-    INVALID_RESTAURANT(HttpStatus.BAD_REQUEST,"일치하는 식당이 없습니다.");
+    INVALID_RESTAURANT(HttpStatus.BAD_REQUEST,"일치하는 식당이 없습니다."),
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다"),
+    INVALID_SUCCESS_PASSWORD(HttpStatus.BAD_REQUEST,"일치하는 비밀번호가 있습니다");
 
     private final HttpStatus httpStatus;
     private final String message;
