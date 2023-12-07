@@ -4,6 +4,8 @@ import com.sparta.gimbap_heaven.security.UserDetailsImpl;
 import com.sparta.gimbap_heaven.user.Entity.User;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
 import com.sparta.gimbap_heaven.user.dto.SignupRequestDto;
+import com.sparta.gimbap_heaven.user.dto.UpdateMoneyRequestDto;
+import com.sparta.gimbap_heaven.user.dto.UserResponseDto;
 import com.sparta.gimbap_heaven.user.dto.updateProfileRequestDto;
 import com.sparta.gimbap_heaven.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +80,22 @@ public class UserService {
         // 사용자 정보 저장
         userRepository.save(userById);
     }
+    @Transactional
+    public void updateMoney(Long userId, UpdateMoneyRequestDto requestDto, User user) {
+        User updateUser = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("사용자가 없어요"));
 
+        if(user.getUsername().equals(updateUser.getUsername())){
+            updateUser.updateMoney(requestDto);
+        }
+        else {
+            throw new IllegalArgumentException("작성자가 일치하지 않습니다.");
+        }
+
+    }
+
+    public UserResponseDto findOneUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("사용자가 없어요"));
+        return new UserResponseDto(user);
+    }
 }
 
