@@ -3,8 +3,6 @@ package com.sparta.gimbap_heaven.order.entity;
 import com.sparta.gimbap_heaven.menu.entity.Menu;
 import com.sparta.gimbap_heaven.order.dto.BasketRequestDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
