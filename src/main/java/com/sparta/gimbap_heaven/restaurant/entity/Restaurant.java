@@ -8,6 +8,7 @@ import com.sparta.gimbap_heaven.menu.entity.Menu;
 import com.sparta.gimbap_heaven.restaurant.dto.RestaurantRequestDto;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,14 +27,20 @@ public class Restaurant extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column
 	private String restaurantName;
 
+	@Column
 	private String restaurantNumber;
 
-	@OneToMany(mappedBy = "Restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Column
+	private String restaurantAddress;
+
+	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Menu> menus = new ArrayList<>();
 	public Restaurant(RestaurantRequestDto restaurantRequestDto)
 	{
+		this.restaurantAddress =restaurantRequestDto.getRestaurantAddress();
 		this.restaurantName = restaurantRequestDto.getRestaurantName();
 		this.restaurantNumber = restaurantRequestDto.getRestaurantNumber();
 	}
