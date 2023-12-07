@@ -15,9 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Table(name = "orders")
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class Order extends BaseTimeEntity {
 
     @Id
@@ -43,6 +41,9 @@ public class Order extends BaseTimeEntity {
         this.totalPrice += basket.getPrice();
     }
 
+    public Order(User user) {
+        this.user = user;
+    }
 
     public void deleteBasket(Basket basket) {
         this.totalPrice -= basket.getPrice();
