@@ -45,9 +45,15 @@ public class UserController {
         return ResponseEntity.ok(new SuccessResponse(200, "회원 가입 성공"));
     }
 
-    @PutMapping("/users/{user_id}")
+    @DeleteMapping("/auth/logout")
+    public ResponseEntity<SuccessResponse> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.logout(userDetails);
+        return ResponseEntity.ok(new SuccessResponse(200, "로그아웃 성공"));
+    }
+
+    @PutMapping("/users/{id}")
     public ResponseEntity<SuccessResponse> editProfile(
-            @PathVariable Long user_id,
+            @PathVariable Long id,
             @Valid @RequestBody updateProfileRequestDto profileRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             BindingResult bindingResult) {
@@ -61,7 +67,7 @@ public class UserController {
             throw new ValidationException("이메일 양식이 올바르지 않습니다.");
         }
 
-        userService.putProfile(user_id, profileRequestDto, userDetails);
+        userService.putProfile(id, profileRequestDto, userDetails);
         return ResponseEntity.ok(new SuccessResponse(200, "내 정보 수정 완료"));
     }
 

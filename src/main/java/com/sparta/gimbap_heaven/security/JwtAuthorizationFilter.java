@@ -58,22 +58,33 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // 만료된 accessToken 일경우 accessToken 재발급
                 // 쿠키에서 리프레시 토큰가져와서 유효성 검사후  발급
                 String refreshToken = jwtUtil.getTokenFromRequest(req);
-//                refreshToken = jwtUtil.substringToken(refreshToken);
                 log.info(refreshToken);
+
                 // refrshToken 검증
-                if (!jwtUtil.validateToken(refreshToken)) {
-                    log.error("유효하지않은 RefreshToken");
+                try {
+                    if (!jwtUtil.validateToken(refreshToken)) {
+                        log.error("유효하지않은 RefreshToken");
+
+                        res.setStatus(400);
+                        res.setCharacterEncoding("utf-8");
+                        PrintWriter writer = res.getWriter();
+                        writer.println("유효하지않은 RefreshToken 입니다. 다시 로그인 해주세요.");
+
+                        return;
+                    }
+                } catch (ExpiredJwtException exception) {
+                    log.error("만료된 RefreshToken");
 
                     res.setStatus(400);
                     res.setCharacterEncoding("utf-8");
                     PrintWriter writer = res.getWriter();
-                    writer.println("유효하지않은 RefreshToken 입니다. 다시 로그인 해주세요.");
+                    writer.println("만료된 RefreshToken 입니다. 다시 로그인 해주세요.");
 
                     return;
                 }
 
                 // refreshToken DB조회
-                if (!jwtUtil.checkTokenDB(refreshToken)) {
+                if (!jwtUtil.checkTokenDBByToken(refreshToken)) {
                     log.error("refreshtoken not exist");
 
                     res.setStatus(400);

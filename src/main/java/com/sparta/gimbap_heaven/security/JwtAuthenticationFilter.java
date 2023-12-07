@@ -2,6 +2,7 @@ package com.sparta.gimbap_heaven.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.gimbap_heaven.jwt.JwtUtil;
+import com.sparta.gimbap_heaven.jwt.RefreshToken;
 import com.sparta.gimbap_heaven.jwt.RefreshTokenRepository;
 import com.sparta.gimbap_heaven.user.dto.LoginRequestDto;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
@@ -21,8 +22,6 @@ import java.io.PrintWriter;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
-
-    private static RefreshTokenRepository refreshTokenRepository;
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -55,10 +54,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         String accessToken = jwtUtil.createAccessToken(username, role);
-        String refreshToken = jwtUtil.createRefreshToken(username, role);
+        String refreshToken = "";
 
-        // RefreshToken DB에 저장
-        jwtUtil.saveRefreshJwtToDB(refreshToken, username);
+
+        try {
+            //  Http 로그인 URL 요청시 토큰저장소 조회 **
+            RefreshToken refreshTokenIns = jwtUtil.getTokenDBByUsername(username);
+            refreshToken = refreshTokenIns.getRefreshToken();
+
+        } catch (NullPointerException e) {
+            refreshToken = jwtUtil.createRefreshToken(username, role);
+            // RefreshToken DB에 저장
+            jwtUtil.saveRefreshJwtToDB(refreshToken, username);
+        }
 
         // RefreshToken 쿠키에 저장
         jwtUtil.addJwtToCookie(refreshToken, response);

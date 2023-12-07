@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
-    Optional<List<RefreshToken>> findAllByKeyUsername(String username);
-    boolean existsByKeyUsername(String username);
-    void deleteByKeyUsername(String username);
+
+    Optional <RefreshToken> findByKeyUsername(String username);
+
+    void deleteBykeyUsername(String username);
+
+
+
 }
