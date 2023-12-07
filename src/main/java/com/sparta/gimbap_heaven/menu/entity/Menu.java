@@ -30,9 +30,9 @@ public class Menu extends BaseTimeEntity {
 	private String name;
 
 	@Column
-	private Double price;
+	private double price;
 
-	public Menu(String category, String name, Double price) {
+	public Menu(String category, String name, double price) {
 		this.category = category;
 		this.name = name;
 		this.price = price;
