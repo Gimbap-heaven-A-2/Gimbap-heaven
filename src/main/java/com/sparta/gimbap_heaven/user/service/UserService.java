@@ -114,5 +114,9 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(()->new ApiException(ErrorCode.INVALID_USER_CHECK));
         return new UserResponseDto(user);
     }
+
+    public User findUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ApiException(ErrorCode.INVALID_USER));
+    }
 }
 
