@@ -110,14 +110,24 @@ public class JwtUtil {
         refreshTokenRepository.save(refreshTokenEntity);
     }
 
-    // RefreshToken DB 조회 검사
-    public boolean checkTokenDB(String token) {
+    // RefreshToken DB 중복 조회 검사
+    public boolean checkTokenDBByToken(String token) {
         Claims user = getUserInfoFromToken(token);
-        Optional<List<RefreshToken>> refreshTokenList = refreshTokenRepository.findAllByKeyUsername(user.getSubject());
-        if (refreshTokenList.isEmpty()) {
-            throw new IllegalArgumentException("로그아웃된 토큰입니다. 다시로그인해주세요.");
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByKeyUsername(user.getSubject());
+        if (refreshToken.isPresent()) {
+            return true;
         }
-        return true;
+        throw new IllegalArgumentException("존재하지 않는 토큰입니다.");
+    }
+
+    // RefreshToken DB에서 username으로 가져오기
+    public RefreshToken getTokenDBByUsername(String username) {
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByKeyUsername(username);
+        if (refreshToken.isPresent()) {
+            return refreshToken.get();
+        } else {
+            throw new NullPointerException();
+        }
     }
 
 

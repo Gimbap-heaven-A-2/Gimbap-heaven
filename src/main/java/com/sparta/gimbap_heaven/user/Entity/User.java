@@ -37,7 +37,7 @@ public class User {
     private String intro;
 
     @Column
-    private Integer money;
+    private double money;
 
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;

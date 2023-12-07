@@ -1,5 +1,7 @@
 package com.sparta.gimbap_heaven.user.service;
 
+import com.sparta.gimbap_heaven.jwt.RefreshToken;
+import com.sparta.gimbap_heaven.jwt.RefreshTokenRepository;
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
 import com.sparta.gimbap_heaven.user.Entity.User;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
@@ -10,10 +12,12 @@ import com.sparta.gimbap_heaven.user.dto.updateProfileRequestDto;
 import com.sparta.gimbap_heaven.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,6 +25,9 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final RefreshTokenRepository refreshTokenRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     // ADMIN_TOKEN
@@ -58,18 +65,25 @@ public class UserService {
         User user = new User(username, password, email, role);
         userRepository.save(user);
     }
+    @Transactional
+    public void logout(UserDetailsImpl userDetails) {
+        // 사용자 이름으로 레포지토리에서 토큰조회
+        RefreshToken refreshToken = refreshTokenRepository.findByKeyUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("로그아웃 사용자입니다."));
+
+        // 로그아웃 처리
+        refreshTokenRepository.deleteBykeyUsername(userDetails.getUsername());
+    }
 
     @Transactional
-    public void putProfile(Long user_id, updateProfileRequestDto profileRequestDto, UserDetailsImpl userDetails) {
+    public void putProfile(Long id, updateProfileRequestDto profileRequestDto, UserDetailsImpl userDetails) {
         // 사용자 ID로 레포지토리에서 사용자 정보 조회
-        User userById = userRepository.findById(user_id)
+        User userById = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
 
         // 사용자 이름으로 레포지토리에서 사용자 정보 조회
         User userByusername = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
 
         if (userById.equals(userByusername)) {
             // 사용자 정보업데이트
@@ -81,8 +95,8 @@ public class UserService {
         userRepository.save(userById);
     }
     @Transactional
-    public void updateMoney(Long userId, UpdateMoneyRequestDto requestDto, User user) {
-        User updateUser = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("사용자가 없어요"));
+    public void updateMoney(Long id, UpdateMoneyRequestDto requestDto, User user) {
+        User updateUser = userRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("사용자가 없어요"));
 
         if(user.getUsername().equals(updateUser.getUsername())){
             updateUser.updateMoney(requestDto);
@@ -93,9 +107,11 @@ public class UserService {
 
     }
 
-    public UserResponseDto findOneUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("사용자가 없어요"));
+    public UserResponseDto findOneUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(()->new IllegalArgumentException("사용자가 없어요"));
         return new UserResponseDto(user);
     }
+
+
 }
 
