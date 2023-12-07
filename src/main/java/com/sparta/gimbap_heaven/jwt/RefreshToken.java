@@ -1,6 +1,7 @@
 package com.sparta.gimbap_heaven.jwt;
 
-import com.sparta.gimbap_heaven.Timestamped;
+import com.sparta.gimbap_heaven.common.entity.BaseTimeEntity;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "REFRESH_TOKEN")
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshToken extends Timestamped {
+public class RefreshToken extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

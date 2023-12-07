@@ -3,16 +3,16 @@ package com.sparta.gimbap_heaven.order.service;
 import com.sparta.gimbap_heaven.global.constant.ErrorCode;
 import com.sparta.gimbap_heaven.global.exception.ApiException;
 import com.sparta.gimbap_heaven.menu.entity.Menu;
-import com.sparta.gimbap_heaven.menu.repository.MenuRepository;
+import com.sparta.gimbap_heaven.menu.service.MenuService;
 import com.sparta.gimbap_heaven.order.dto.BasketRequestDto;
 import com.sparta.gimbap_heaven.order.dto.OrderResponseDto;
 import com.sparta.gimbap_heaven.order.entity.Basket;
 import com.sparta.gimbap_heaven.order.entity.Order;
 import com.sparta.gimbap_heaven.order.repository.BasketRepository;
 import com.sparta.gimbap_heaven.order.repository.OrderRepository;
-
 import com.sparta.gimbap_heaven.user.Entity.User;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
+import com.sparta.gimbap_heaven.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +25,9 @@ import java.util.Objects;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final MenuRepository menuRepository;
     private final BasketRepository basketRepository;
+    private final MenuService menuService;
+    private final UserService userService;
 
 
     @Transactional
@@ -35,9 +36,7 @@ public class OrderService {
                 () -> new Order(user)
         );
 
-        Menu menu = menuRepository.findById(requestDto.getMenu_id()).orElseThrow(
-                () -> new ApiException(ErrorCode.INVALID_MENU)
-        );
+        Menu menu = menuService.findMenu(requestDto.getMenu_id());
 
         Basket basket = new Basket(order, menu, requestDto.getCount());
         if (order.getId() != null){
@@ -58,9 +57,7 @@ public class OrderService {
 
         checkUserOrRole(user, order);
 
-        menuRepository.findById(requestDto.getMenu_id()).orElseThrow(
-                () -> new ApiException(ErrorCode.INVALID_MENU)
-        );
+        menuService.findMenu(requestDto.getMenu_id());
 
         for (Basket basket : order.getBaskets()) {
             if (Objects.equals(basket.getMenu().getId(), requestDto.getMenu_id())) {
@@ -93,9 +90,7 @@ public class OrderService {
         );
         checkUserOrRole(user, order);
 
-        menuRepository.findById(menuId).orElseThrow(
-                () -> new ApiException(ErrorCode.INVALID_MENU)
-        );
+        menuService.findMenu(menuId);
 
         for (Basket basket : order.getBaskets()) {
             if (Objects.equals(basket.getMenu().getId(), menuId)) {
@@ -128,8 +123,10 @@ public class OrderService {
             throw new ApiException(ErrorCode.INVALID_MONEY);
         }
 
-        user.useMoney(order.getTotalPrice());
         checkUser(user, order);
+
+        User orderedUser = userService.findUser(user.getId());
+        orderedUser.useMoney(order.getTotalPrice());
         order.updateIsOrdered(true);
     }
 
