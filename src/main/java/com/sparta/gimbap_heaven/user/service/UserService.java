@@ -97,12 +97,13 @@ public class UserService {
         userRepository.save(userById);
     }
     @Transactional
-    public void updateMoney(Long userId, UpdateMoneyRequestDto requestDto, User user) {
+    public double updateMoney(Long userId, UpdateMoneyRequestDto requestDto, User user) {
         User updateUser = userRepository.findById(userId).orElseThrow(()-> new ApiException(ErrorCode.INVALID_USER_CHECK));
 
         if(user.getUsername().equals(updateUser.getUsername())){
             double moneySum = updateUser.getMoney() + requestDto.getMoney();
             updateUser.updateMoney(moneySum);
+            return moneySum;
         }
         else {
             throw new IllegalArgumentException("작성자가 일치하지 않습니다.");

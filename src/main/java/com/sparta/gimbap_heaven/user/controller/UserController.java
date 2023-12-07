@@ -81,8 +81,8 @@ public class UserController {
     public ResponseEntity<SuccessResponse> updateMoney(@PathVariable Long id,
                                                        @RequestBody UpdateMoneyRequestDto requestDto,
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
-        userService.updateMoney(id,requestDto,userDetails.getUser());
-        return ResponseEntity.status(UPDATE_MONEY.getHttpStatus()).body(new SuccessResponse(UPDATE_MONEY));
+        int money = (int) userService.updateMoney(id,requestDto,userDetails.getUser());
+        return ResponseEntity.status(UPDATE_MONEY.getHttpStatus()).body(new SuccessResponse(UPDATE_MONEY," Money : " + money/10 + "만 " + (money%10)*1000 +"원"));
     }
 
 }
