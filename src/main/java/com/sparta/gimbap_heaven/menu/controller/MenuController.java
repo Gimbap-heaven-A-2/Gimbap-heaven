@@ -63,7 +63,7 @@ public class MenuController {
 													  @RequestBody MenuRequestDto menuRequestDto,
 													  @AuthenticationPrincipal UserDetailsImpl userDetails){
 		menuService.updateMenu(id,menuRequestDto, userDetails.getUser());
-		return ResponseEntity.status(UPDATE_MENU.getHttpStatus())
+		return ResponseEntity.status(UPDATE_MENU.getHttpStatus().value())
 			.body(new SuccessResponse(UPDATE_MENU));
 	}
 
@@ -72,7 +72,7 @@ public class MenuController {
 													  @AuthenticationPrincipal UserDetailsImpl userDetails){
 		menuService.deleteMenu(id, userDetails.getUser());
 
-		return ResponseEntity.status(DELETE_MENU.getHttpStatus())
+		return ResponseEntity.status(DELETE_MENU.getHttpStatus().value())
 			.body(new SuccessResponse(DELETE_MENU));
 	}
 
