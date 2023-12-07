@@ -58,21 +58,21 @@ public class MenuController {
 	}
 
 
-	@PutMapping("/menus/{menuId}")
-	public ResponseEntity<SuccessResponse> updateMenu(@PathVariable(name = "menuId") Long menuId,
+	@PutMapping("/menus/{id}")
+	public ResponseEntity<SuccessResponse> updateMenu(@PathVariable(name = "id") Long id,
 													  @RequestBody MenuRequestDto menuRequestDto,
 													  @AuthenticationPrincipal UserDetailsImpl userDetails){
-		menuService.updateMenu(menuId,menuRequestDto, userDetails.getUser());
-		return ResponseEntity.status(UPDATE_MENU.getHttpStatus())
+		menuService.updateMenu(id,menuRequestDto, userDetails.getUser());
+		return ResponseEntity.status(UPDATE_MENU.getHttpStatus().value())
 			.body(new SuccessResponse(UPDATE_MENU));
 	}
 
-	@DeleteMapping("/menus/{menuId}")
-	public ResponseEntity<SuccessResponse> deleteMenu(@PathVariable(name = "menuId")Long menuId,
+	@DeleteMapping("/menus/{id}")
+	public ResponseEntity<SuccessResponse> deleteMenu(@PathVariable(name = "id")Long id,
 													  @AuthenticationPrincipal UserDetailsImpl userDetails){
-		menuService.deleteMenu(menuId, userDetails.getUser());
+		menuService.deleteMenu(id, userDetails.getUser());
 
-		return ResponseEntity.status(DELETE_MENU.getHttpStatus())
+		return ResponseEntity.status(DELETE_MENU.getHttpStatus().value())
 			.body(new SuccessResponse(DELETE_MENU));
 	}
 
