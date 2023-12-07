@@ -1,8 +1,6 @@
 package com.sparta.gimbap_heaven.user.Entity;
 
 
-import com.sparta.gimbap_heaven.review.dto.ReviewRequestDto;
-import com.sparta.gimbap_heaven.user.dto.UpdateMoneyRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
