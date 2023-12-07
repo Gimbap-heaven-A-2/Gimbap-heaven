@@ -65,17 +65,17 @@ public class UserController {
         return ResponseEntity.ok(new SuccessResponse(200, "내 정보 수정 완료"));
     }
 
-    @GetMapping("/users/{user_id}")
-    public ResponseEntity<SuccessResponse> getOneUser(@PathVariable Long user_id){
-        UserResponseDto responseDto = userService.findOneUser(user_id);
+    @GetMapping("/users/{id}")
+    public ResponseEntity<SuccessResponse> getOneUser(@PathVariable Long id){
+        UserResponseDto responseDto = userService.findOneUser(id);
         return ResponseEntity.status(SUCCESS_USER.getHttpStatus()).body(new SuccessResponse(SUCCESS_USER,responseDto));
     }
 
-    @PutMapping("/users/{user_id}/money")
-    public ResponseEntity<SuccessResponse> updateMoney(@PathVariable Long user_id,
+    @PutMapping("/users/{id}/money")
+    public ResponseEntity<SuccessResponse> updateMoney(@PathVariable Long id,
                                                        @RequestBody UpdateMoneyRequestDto requestDto,
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
-        userService.updateMoney(user_id,requestDto,userDetails.getUser());
+        userService.updateMoney(id,requestDto,userDetails.getUser());
         return ResponseEntity.status(UPDATE_MONEY.getHttpStatus()).body(new SuccessResponse(UPDATE_MONEY));
     }
 
