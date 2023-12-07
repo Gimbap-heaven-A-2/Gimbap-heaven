@@ -14,4 +14,7 @@ public class RestaurantRequestDto {
 
 	@NotBlank
 	private String restaurantNumber;
+
+	@NotBlank
+	private String restaurantAddress;
 }
