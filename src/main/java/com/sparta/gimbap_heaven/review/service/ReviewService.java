@@ -34,12 +34,16 @@ public class ReviewService {
 
 
     public ReviewResponseDto createReview(Long orderId,
-                                          ReviewRequestDto requestDto,
-                                          User user) {
+        ReviewRequestDto requestDto,
+        User user) {
         Order order = orderRepository.findById(orderId).orElseThrow(()-> new ApiException(ErrorCode.INVALID_ORDER));
-        Review review= reviewRepository.save(new Review(requestDto,order,user));
-
-        return new ReviewResponseDto(review);
+        if(order.getUser().getUsername().equals(user.getUsername())){
+            Review review= reviewRepository.save(new Review(requestDto,order,user));
+            return new ReviewResponseDto(review);
+        }
+        else {
+            throw new ApiException(ErrorCode.INVALID_MADE);
+        }
     }
 
     public ReviewResponseDto findOneReview(Long id) {

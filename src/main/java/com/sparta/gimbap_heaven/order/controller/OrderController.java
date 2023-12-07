@@ -25,22 +25,22 @@ public class OrderController {
         return ResponseEntity.status(CREATE_BASKET_IN_CART.getHttpStatus()).body(new SuccessResponse(CREATE_BASKET_IN_CART));
     }
 
-    @PutMapping("/{order_id}")
-    public ResponseEntity<SuccessResponse> updateInCart(@PathVariable Long order_id,
+    @PutMapping("/{id}")
+    public ResponseEntity<SuccessResponse> updateInCart(@PathVariable Long id,
                                                         @RequestBody @Valid BasketRequestDto requestDto,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        orderService.updateInCart(order_id, requestDto, userDetails.getUser());
+        orderService.updateInCart(id, requestDto, userDetails.getUser());
         return ResponseEntity.status(UPDATE_BASKET_IN_CART.getHttpStatus()).body(new SuccessResponse(UPDATE_BASKET_IN_CART));
     }
 
-    @DeleteMapping("/{order_id}")
-    public ResponseEntity<SuccessResponse> deleteCart(@PathVariable Long order_id,
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponse> deleteCart(@PathVariable Long id,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        orderService.deleteCart(order_id, userDetails.getUser());
+        orderService.deleteCart(id, userDetails.getUser());
         return ResponseEntity.status(DELETE_CART.getHttpStatus()).body(new SuccessResponse(DELETE_CART));
     }
 
-    @DeleteMapping("/{order_id}/{menu_id}")
+    @DeleteMapping("/{order_id}/menu/{menu_id}")
     public ResponseEntity<SuccessResponse> deleteMenuInCart(@PathVariable Long order_id,
                                                             @PathVariable Long menu_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         orderService.deleteMenuInCart(order_id, menu_id, userDetails.getUser());
@@ -49,12 +49,13 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<?> getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.status(SUCCESS_BASKET_IN_CART.getHttpStatus()).body(new SuccessResponse(SUCCESS_BASKET_IN_CART, orderService.getCart(userDetails.getUser())));
+        return ResponseEntity.status(SUCCESS_BASKET_IN_CART.getHttpStatus())
+            .body(new SuccessResponse(SUCCESS_BASKET_IN_CART, orderService.getCart(userDetails.getUser())));
     }
 
-    @PutMapping("/{order_id}/ordered")
-    public ResponseEntity<SuccessResponse> setCartIsOrdered(@PathVariable Long order_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        orderService.updateCartIsOrdered(order_id, userDetails.getUser());
+    @PutMapping("/{id}/ordered")
+    public ResponseEntity<SuccessResponse> setCartIsOrdered(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        orderService.updateCartIsOrdered(id, userDetails.getUser());
         return ResponseEntity.status(DONE_ORDERED.getHttpStatus()).body(new SuccessResponse(DONE_ORDERED));
     }
 }
