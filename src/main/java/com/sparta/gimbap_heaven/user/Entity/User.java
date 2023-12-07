@@ -46,8 +46,8 @@ public class User {
         this.role = role;
     }
 
-    public void updateMoney(UpdateMoneyRequestDto requestDto){
-        this.money=requestDto.getMoney();
+    public void updateMoney(double money){
+        this.money = money;
     }
 
     public void useMoney(Double totalPrice) {

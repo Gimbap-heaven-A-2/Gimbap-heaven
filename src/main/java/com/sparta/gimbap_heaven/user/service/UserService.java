@@ -101,7 +101,8 @@ public class UserService {
         User updateUser = userRepository.findById(userId).orElseThrow(()-> new ApiException(ErrorCode.INVALID_USER_CHECK));
 
         if(user.getUsername().equals(updateUser.getUsername())){
-            updateUser.updateMoney(requestDto);
+            double moneySum = updateUser.getMoney() + requestDto.getMoney();
+            updateUser.updateMoney(moneySum);
         }
         else {
             throw new IllegalArgumentException("작성자가 일치하지 않습니다.");
