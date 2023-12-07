@@ -32,18 +32,14 @@ public class OrderService {
     @Transactional
     public void saveInCart(BasketRequestDto requestDto, User user) {
         Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseGet(
-                () -> Order.builder().user(user).build()
+                () -> new Order(user)
         );
 
         Menu menu = menuRepository.findById(requestDto.getMenu_id()).orElseThrow(
                 () -> new ApiException(ErrorCode.INVALID_MENU)
         );
 
-        Basket basket = basketRepository.save(Basket.builder()
-                .menu(menu)
-                .order(order)
-                .count(requestDto.getCount())
-                .build());
+        Basket basket = basketRepository.save(new Basket(order, menu, requestDto.getCount()));
 
         order.addBasket(basket);
         orderRepository.save(order);
@@ -119,24 +115,27 @@ public class OrderService {
 
     @Transactional
     public void updateCartIsOrdered(Long orderId, User user) {
-        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseThrow(
+        Order order = orderRepository.findByIdAndIsOrdered(orderId, false).orElseThrow(
                 () -> new ApiException(ErrorCode.INVALID_CART)
         );
 
-        checkUser(user, order);
+        if (order.getTotalPrice() > user.getMoney()) {
+            throw new ApiException(ErrorCode.INVALID_MONEY);
+        }
 
+        checkUser(user, order);
         order.updateIsOrdered(true);
     }
 
     private static void checkUserOrRole(User user, Order order) {
         if (!order.getUser().getUsername().equals(user.getUsername()) || !user.getRole().equals(UserRoleEnum.ADMIN)) {
-            throw new ApiException(ErrorCode.INVALID_AUTHORIZATION);
+            throw new ApiException(ErrorCode.INVALID_USER);
         }
     }
 
     private void checkUser(User user, Order order) {
         if (!order.getUser().getUsername().equals(user.getUsername())) {
-            throw new ApiException(ErrorCode.INVALID_AUTHORIZATION);
+            throw new ApiException(ErrorCode.INVALID_USER);
         }
     }
 }

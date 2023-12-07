@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class Basket {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +25,12 @@ public class Basket {
     private Menu menu;
 
     private int count;
+
+    public Basket(Order order, Menu menu, int count) {
+        this.order = order;
+        this.menu = menu;
+        this.count = count;
+    }
 
     public Double getPrice() {
         return menu.getPrice() * count;
