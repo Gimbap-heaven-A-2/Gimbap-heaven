@@ -31,11 +31,12 @@ public class MenuController {
 		this.menuService = menuService;
 	}
 
-	@PostMapping("/menus")
-	public ResponseEntity<SuccessResponse> createMenu(@RequestBody MenuRequestDto menuRequestDto,
+	@PostMapping("/menus/restaurant/{id}")
+	public ResponseEntity<SuccessResponse> createMenu(@PathVariable Long id,
+													  @RequestBody MenuRequestDto menuRequestDto,
 													  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-		menuService.createMenu(menuRequestDto, userDetails.getUser());
+		menuService.createMenu(id ,menuRequestDto, userDetails.getUser());
 		return ResponseEntity.status(CREATE_MENU.getHttpStatus().value())
 			.body(new SuccessResponse(CREATE_MENU));
 	}
