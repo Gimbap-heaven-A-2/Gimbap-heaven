@@ -11,11 +11,12 @@ import java.util.List;
 public class OrderResponseDto {
 
     private String username;
+    private String restaurantName;
     private List<BasketResponseDto> basketResponseDtoList;
     private double totalPrice;
 
     public static OrderResponseDto of(Order order) {
         List<BasketResponseDto> basket = order.getBaskets().stream().map(BasketResponseDto::of).toList();
-        return new OrderResponseDto(order.getUser().getUsername(), basket, order.getTotalPrice());
+        return new OrderResponseDto(order.getUser().getUsername(), order.getRestaurant().getRestaurantName(), basket, order.getTotalPrice());
     }
 }

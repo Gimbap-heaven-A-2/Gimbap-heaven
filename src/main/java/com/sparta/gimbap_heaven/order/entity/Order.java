@@ -1,6 +1,7 @@
 package com.sparta.gimbap_heaven.order.entity;// package com.sparta.gimbap_heaven.order.entity;
 
 import com.sparta.gimbap_heaven.common.entity.BaseTimeEntity;
+import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
 import com.sparta.gimbap_heaven.user.Entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,6 +27,10 @@ public class Order extends BaseTimeEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Basket> baskets = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
+
     private double totalPrice = 0.0;
 
     private Boolean isOrdered = false;
@@ -35,8 +40,9 @@ public class Order extends BaseTimeEntity {
         this.totalPrice += basket.getPrice();
     }
 
-    public Order(User user) {
+    public Order(User user, Restaurant restaurant) {
         this.user = user;
+        this.restaurant = restaurant;
     }
 
     public void deleteBasket(Basket basket) {

@@ -10,6 +10,8 @@ import com.sparta.gimbap_heaven.order.entity.Basket;
 import com.sparta.gimbap_heaven.order.entity.Order;
 import com.sparta.gimbap_heaven.order.repository.BasketRepository;
 import com.sparta.gimbap_heaven.order.repository.OrderRepository;
+import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
+import com.sparta.gimbap_heaven.restaurant.service.RestaurantService;
 import com.sparta.gimbap_heaven.user.Entity.User;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
 import com.sparta.gimbap_heaven.user.service.UserService;
@@ -26,22 +28,28 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final BasketRepository basketRepository;
+
     private final MenuService menuService;
     private final UserService userService;
+    private final RestaurantService restaurantService;
 
 
     @Transactional
     public void saveInCart(BasketRequestDto requestDto, User user) {
-        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseGet(
-                () -> new Order(user)
-        );
-
         Menu menu = menuService.findMenu(requestDto.getMenu_id());
+        Restaurant restaurant = restaurantService.findRestaurant(menu.getRestaurant().getId());
+
+        Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseGet(
+                () -> new Order(user, restaurant)
+        );
 
         Basket basket = new Basket(order, menu, requestDto.getCount());
         if (order.getId() != null){
             if (basketRepository.findByOrderAndMenu_Id(order, menu.getId()).isPresent()) {
                 throw new ApiException(ErrorCode.ALREADY_EXIST_IN_CART);
+            }
+            if (!Objects.equals(order.getRestaurant().getId(), restaurant.getId())) {
+                throw new ApiException(ErrorCode.DIFFERENT_RESTAURANT_IN_CART);
             }
         }
 
@@ -55,7 +63,8 @@ public class OrderService {
                 () -> new ApiException(ErrorCode.INVALID_CART)
         );
 
-        checkUserOrRole(user, order);
+        User orderUser = userService.findUser(order.getUser().getId());
+        checkUserOrRole(user, orderUser);
 
         menuService.findMenu(requestDto.getMenu_id());
 
@@ -78,7 +87,8 @@ public class OrderService {
                 () -> new ApiException(ErrorCode.INVALID_CART)
         );
 
-        checkUserOrRole(user, order);
+        User orderUser = userService.findUser(order.getUser().getId());
+        checkUserOrRole(user, orderUser);
 
         orderRepository.delete(order);
     }
@@ -88,7 +98,9 @@ public class OrderService {
         Order order = orderRepository.findByIdAndIsOrdered(orderId, false).orElseThrow(
                 () -> new ApiException(ErrorCode.INVALID_CART)
         );
-        checkUserOrRole(user, order);
+
+        User orderUser = userService.findUser(order.getUser().getId());
+        checkUserOrRole(user, orderUser);
 
         menuService.findMenu(menuId);
 
@@ -96,6 +108,10 @@ public class OrderService {
             if (Objects.equals(basket.getMenu().getId(), menuId)) {
                 order.deleteBasket(basket);
                 basketRepository.delete(basket);
+
+                if (order.getBaskets().isEmpty()) {
+                    orderRepository.delete(order);
+                }
                 return;
             }
         }
@@ -108,7 +124,8 @@ public class OrderService {
                 () -> new ApiException(ErrorCode.INVALID_CART)
         );
 
-        checkUser(user, order);
+        User orderUser = userService.findUser(order.getUser().getId());
+        checkUserOrRole(user, orderUser);
 
         return OrderResponseDto.of(order);
     }
@@ -123,22 +140,18 @@ public class OrderService {
             throw new ApiException(ErrorCode.INVALID_MONEY);
         }
 
-        checkUser(user, order);
+        User orderUser = userService.findUser(order.getUser().getId());
+        checkUserOrRole(user, orderUser);
 
         User orderedUser = userService.findUser(user.getId());
         orderedUser.useMoney(order.getTotalPrice());
         order.updateIsOrdered(true);
     }
 
-    private static void checkUserOrRole(User user, Order order) {
-        if (!order.getUser().getUsername().equals(user.getUsername()) && !user.getRole().equals(UserRoleEnum.ADMIN)) {
+    private static void checkUserOrRole(User loginUser, User orderUser) {
+        if (!orderUser.getUsername().equals(loginUser.getUsername()) && !loginUser.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new ApiException(ErrorCode.INVALID_USER);
         }
     }
 
-    private void checkUser(User user, Order order) {
-        if (!order.getUser().getUsername().equals(user.getUsername())) {
-            throw new ApiException(ErrorCode.INVALID_USER);
-        }
-    }
 }
