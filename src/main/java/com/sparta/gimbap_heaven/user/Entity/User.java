@@ -1,6 +1,8 @@
 package com.sparta.gimbap_heaven.user.Entity;
 
 
+import com.sparta.gimbap_heaven.review.dto.ReviewRequestDto;
+import com.sparta.gimbap_heaven.user.dto.UpdateMoneyRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,11 +36,18 @@ public class User {
     @Column
     private String intro;
 
+    @Column
+    private Integer money;
+
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
+    }
+
+    public void updateMoney(UpdateMoneyRequestDto requestDto){
+        this.money=requestDto.getMoney();
     }
 
 }
