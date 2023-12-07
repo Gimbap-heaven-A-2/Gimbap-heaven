@@ -37,7 +37,7 @@ public class User {
     private String intro;
 
     @Column
-    private Integer money;
+    private double money;
 
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;
@@ -50,4 +50,7 @@ public class User {
         this.money=requestDto.getMoney();
     }
 
+    public void useMoney(Double totalPrice) {
+        this.money -= totalPrice;
+    }
 }

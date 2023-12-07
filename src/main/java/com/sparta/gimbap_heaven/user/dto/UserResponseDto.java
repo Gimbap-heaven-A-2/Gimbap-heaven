@@ -9,7 +9,7 @@ import lombok.Setter;
 public class UserResponseDto {
     private String username;
     private String email;
-    private Integer money;
+    private double money;
     private String intro;
 
     public UserResponseDto(User user){

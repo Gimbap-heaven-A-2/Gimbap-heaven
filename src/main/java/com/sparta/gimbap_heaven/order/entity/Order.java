@@ -26,7 +26,7 @@ public class Order extends BaseTimeEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Basket> baskets = new ArrayList<>();
 
-    private Double totalPrice = 0.0;
+    private double totalPrice = 0.0;
 
     private Boolean isOrdered = false;
 

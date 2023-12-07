@@ -123,6 +123,7 @@ public class OrderService {
             throw new ApiException(ErrorCode.INVALID_MONEY);
         }
 
+        user.useMoney(order.getTotalPrice());
         checkUser(user, order);
         order.updateIsOrdered(true);
     }
