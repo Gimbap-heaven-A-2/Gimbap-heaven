@@ -1,6 +1,9 @@
 package com.sparta.gimbap_heaven.security;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.gimbap_heaven.global.constant.ErrorCode;
+import com.sparta.gimbap_heaven.global.dto.ErrorResponse;
 import com.sparta.gimbap_heaven.jwt.JwtUtil;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
 import io.jsonwebtoken.Claims;
@@ -10,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -28,29 +32,25 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final ObjectMapper objectMapper;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, ObjectMapper objectMapper) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
         String accessTokenValue = jwtUtil.getJwtFromHeader(req);
-
-
         if (StringUtils.hasText(accessTokenValue)) {
             log.info(accessTokenValue);
 
             try {
                 if (!jwtUtil.validateToken(accessTokenValue)) {
                     log.error("유효하지않은 AccesToken");
-
-                    res.setStatus(400);
-                    res.setCharacterEncoding("utf-8");
-                    PrintWriter writer = res.getWriter();
-                    writer.println("AccessToken이 유효하지 않습니다.");
+                    setResponse(res,ErrorCode.ACCESS_DENIED);
                     return;
                 }
 
@@ -58,29 +58,30 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // 만료된 accessToken 일경우 accessToken 재발급
                 // 쿠키에서 리프레시 토큰가져와서 유효성 검사후  발급
                 String refreshToken = jwtUtil.getTokenFromRequest(req);
-//                refreshToken = jwtUtil.substringToken(refreshToken);
                 log.info(refreshToken);
+                if (refreshToken.isEmpty()) {
+                    log.error("쿠키에 RereshToken이 존재하지 않습니다.");
+                    setResponse(res, ErrorCode.UNKNOWN_ERROR_NOT_EXIST_REFRESHTOKEN);
+                    return;
+                }
+
                 // refrshToken 검증
-                if (!jwtUtil.validateToken(refreshToken)) {
-                    log.error("유효하지않은 RefreshToken");
-
-                    res.setStatus(400);
-                    res.setCharacterEncoding("utf-8");
-                    PrintWriter writer = res.getWriter();
-                    writer.println("유효하지않은 RefreshToken 입니다. 다시 로그인 해주세요.");
-
+                try {
+                    if (!jwtUtil.validateToken(refreshToken)) {
+                        log.error("유효하지않은 RefreshToken");
+                        setResponse(res,ErrorCode.ACCESS_DENIED);
+                        return;
+                    }
+                } catch (ExpiredJwtException exception) {
+                    log.error("만료된 RefreshToken");
+                    setResponse(res,ErrorCode.EXPIRED_TOKEN);
                     return;
                 }
 
                 // refreshToken DB조회
-                if (!jwtUtil.checkTokenDB(refreshToken)) {
-                    log.error("refreshtoken not exist");
-
-                    res.setStatus(400);
-                    res.setCharacterEncoding("utf-8");
-                    PrintWriter writer = res.getWriter();
-                    writer.println("등록되지않은 RefreshToken 입니다. 다시 로그인 해주세요.");
-
+                if (!jwtUtil.checkTokenDBByToken(refreshToken)) {
+                    log.error("DB에 해당 RefreshToken이 존재하지 않습니다.");
+                    setResponse(res,ErrorCode.UNKNOWN_ERROR_NOT_EXIST_REFRESHTOKEN);
                     return;
                 }
 
@@ -128,5 +129,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
+    private void setResponse(HttpServletResponse response, ErrorCode errorCode) {
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.setCharacterEncoding("utf-8");
+        ErrorResponse errorResponse = new ErrorResponse(errorCode.getHttpStatus(), errorCode.getMessage());
+
+        try {
+            response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+           } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }

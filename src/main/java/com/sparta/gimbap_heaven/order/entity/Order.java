@@ -1,41 +1,38 @@
 package com.sparta.gimbap_heaven.order.entity;// package com.sparta.gimbap_heaven.order.entity;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.sparta.gimbap_heaven.common.entity.BaseTimeEntity;
-
+import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
 import com.sparta.gimbap_heaven.user.Entity.User;
 import jakarta.persistence.*;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Table(name = "orders")
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class Order extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
     private List<Basket> baskets = new ArrayList<>();
 
-    @Builder.Default
-    private Double totalPrice = 0.0;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
 
-    @Builder.Default
+    private double totalPrice = 0.0;
+
     private Boolean isOrdered = false;
 
     public void addBasket(Basket basket) {
@@ -43,6 +40,10 @@ public class Order extends BaseTimeEntity {
         this.totalPrice += basket.getPrice();
     }
 
+    public Order(User user, Restaurant restaurant) {
+        this.user = user;
+        this.restaurant = restaurant;
+    }
 
     public void deleteBasket(Basket basket) {
         this.totalPrice -= basket.getPrice();

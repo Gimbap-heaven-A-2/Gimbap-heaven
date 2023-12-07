@@ -10,6 +10,8 @@ import com.sparta.gimbap_heaven.menu.dto.MenuRequestDto;
 import com.sparta.gimbap_heaven.menu.dto.MenuResponseDto;
 import com.sparta.gimbap_heaven.menu.entity.Menu;
 import com.sparta.gimbap_heaven.menu.repository.MenuRepository;
+import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
+import com.sparta.gimbap_heaven.restaurant.service.RestaurantService;
 import com.sparta.gimbap_heaven.user.Entity.User;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
 
@@ -20,34 +22,42 @@ import lombok.extern.slf4j.Slf4j;
 public class MenuService {
 	private final MenuRepository menuRepository;
 
-	public MenuService(MenuRepository menuRepository) {
+	private final RestaurantService restaurantService;
+
+	public MenuService(MenuRepository menuRepository, RestaurantService restaurantService) {
 		this.menuRepository = menuRepository;
+		this.restaurantService = restaurantService;
 	}
 
-	public void createMenu(MenuRequestDto menuRequestDto, User user )  {
+	public void createMenu(Long id, MenuRequestDto menuRequestDto, User user )  {
 		checkUserRoleAdmin(user);
-		Menu menu = new Menu(menuRequestDto);
+		Restaurant restaurant = restaurantService.findRestaurant(id);
+		Menu menu = new Menu(menuRequestDto ,restaurant);
 		menuRepository.save(menu);
 	}
 
-	public MenuResponseDto getAllMenu(){
-		return new MenuResponseDto(menuRepository.findAll());
+	public MenuResponseDto getAllMenu(Long id){
+		return new MenuResponseDto(menuRepository.findAllByRestaurantId(id)
+			.orElseThrow(()-> new ApiException(INVALID_MENU)));
 	}
-	public MenuResponseDto getFoodTypeMenu(String type){
-		return new MenuResponseDto(menuRepository.findALlByCategory(type));
+	public MenuResponseDto getFoodTypeMenu(Long id, String type){
+		return new MenuResponseDto(menuRepository.findAllByRestaurantIdAndCategory(id,type)
+			.orElseThrow(()-> new ApiException(INVALID_MENU)));
 	}
 
 	@Transactional
-	public void updateMenu(Long id,MenuRequestDto menuRequestDto, User user)  {
+	public void updateMenu(Long restaurantId, Long menusId, MenuRequestDto menuRequestDto, User user)  {
 		checkUserRoleAdmin(user);
-		Menu menu = findMenu(id);
+		Menu menu = menuRepository.findByIdAndRestaurantId(menusId,restaurantId)
+			.orElseThrow(()-> new ApiException(INVALID_MENU));
 		menu.updateMenu(menuRequestDto);
 	}
 
 
-	public void deleteMenu(Long id, User user) {
+	public void deleteMenu(Long restaurantId, Long menusId, User user) {
 		checkUserRoleAdmin(user);
-		Menu menu = findMenu(id);
+		Menu menu = menuRepository.findByIdAndRestaurantId(menusId, restaurantId)
+			.orElseThrow(()-> new ApiException(INVALID_MENU));
 		menuRepository.delete(menu);
 	}
 

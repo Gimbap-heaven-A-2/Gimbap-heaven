@@ -31,48 +31,50 @@ public class MenuController {
 		this.menuService = menuService;
 	}
 
-	@PostMapping("/menus")
-	public ResponseEntity<SuccessResponse> createMenu(@RequestBody MenuRequestDto menuRequestDto,
+	@PostMapping("/restaurant/{id}/menus")
+	public ResponseEntity<SuccessResponse> createMenu(@PathVariable Long id,
+													  @RequestBody MenuRequestDto menuRequestDto,
 													  @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-		menuService.createMenu(menuRequestDto, userDetails.getUser());
+		menuService.createMenu(id ,menuRequestDto, userDetails.getUser());
 		return ResponseEntity.status(CREATE_MENU.getHttpStatus().value())
 			.body(new SuccessResponse(CREATE_MENU));
 	}
 
-	@GetMapping("/menus")
-	public ResponseEntity<SuccessResponse> getMenu(){
-
-		MenuResponseDto menuResponseDto = menuService.getAllMenu();
+	@GetMapping("/restaurant/{id}/menus")
+	public ResponseEntity<SuccessResponse> getMenu(@PathVariable Long id){
+		MenuResponseDto menuResponseDto = menuService.getAllMenu(id);
 		return ResponseEntity.status(SUCCESS_MENU.getHttpStatus().value())
 			.body(new SuccessResponse(SUCCESS_MENU,menuResponseDto));
 	}
 
-	@GetMapping("/menus/type")
-	public ResponseEntity<SuccessResponse> getTypeMenu(@RequestParam(name = "type") String type){
+	@GetMapping("/restaurant/{id}/menus/type")
+	public ResponseEntity<SuccessResponse> getTypeMenu(@PathVariable Long id,
+													   @RequestParam(name = "type") String type){
 
-		MenuResponseDto menuResponseDto = menuService.getFoodTypeMenu(type);
+		MenuResponseDto menuResponseDto = menuService.getFoodTypeMenu(id, type);
 
 		return ResponseEntity.status(SUCCESS_MENU.getHttpStatus().value())
 			.body(new SuccessResponse(SUCCESS_MENU,menuResponseDto));
 	}
 
 
-	@PutMapping("/menus/{menuId}")
-	public ResponseEntity<SuccessResponse> updateMenu(@PathVariable(name = "menuId") Long menuId,
+	@PutMapping("/restaurant/{restaurantId}/menus/{menusId}")
+	public ResponseEntity<SuccessResponse> updateMenu(@PathVariable(name = "restaurantId") Long restaurantId,
+													  @PathVariable(name = "menusId") Long menusId,
 													  @RequestBody MenuRequestDto menuRequestDto,
 													  @AuthenticationPrincipal UserDetailsImpl userDetails){
-		menuService.updateMenu(menuId,menuRequestDto, userDetails.getUser());
-		return ResponseEntity.status(UPDATE_MENU.getHttpStatus())
+		menuService.updateMenu(restaurantId, menusId, menuRequestDto, userDetails.getUser());
+		return ResponseEntity.status(UPDATE_MENU.getHttpStatus().value())
 			.body(new SuccessResponse(UPDATE_MENU));
 	}
 
-	@DeleteMapping("/menus/{menuId}")
-	public ResponseEntity<SuccessResponse> deleteMenu(@PathVariable(name = "menuId")Long menuId,
+	@DeleteMapping("/restaurant/{restaurantId}/menus/{menusId}")
+	public ResponseEntity<SuccessResponse> deleteMenu(@PathVariable(name = "restaurantId")Long restaurantId,
+													  @PathVariable(name = "menusId")Long menusId,
 													  @AuthenticationPrincipal UserDetailsImpl userDetails){
-		menuService.deleteMenu(menuId, userDetails.getUser());
+		menuService.deleteMenu(restaurantId,menusId, userDetails.getUser());
 
-		return ResponseEntity.status(DELETE_MENU.getHttpStatus())
+		return ResponseEntity.status(DELETE_MENU.getHttpStatus().value())
 			.body(new SuccessResponse(DELETE_MENU));
 	}
 
