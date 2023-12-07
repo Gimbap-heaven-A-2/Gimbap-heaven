@@ -39,7 +39,12 @@ public class OrderService {
                 () -> new ApiException(ErrorCode.INVALID_MENU)
         );
 
-        Basket basket = basketRepository.save(new Basket(order, menu, requestDto.getCount()));
+        Basket basket = new Basket(order, menu, requestDto.getCount());
+        if (order.getId() != null){
+            if (basketRepository.findByOrderAndMenu_Id(order, menu.getId()).isPresent()) {
+                throw new ApiException(ErrorCode.ALREADY_EXIST_IN_CART);
+            }
+        }
 
         order.addBasket(basket);
         orderRepository.save(order);
@@ -129,7 +134,7 @@ public class OrderService {
     }
 
     private static void checkUserOrRole(User user, Order order) {
-        if (!order.getUser().getUsername().equals(user.getUsername()) || !user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (!order.getUser().getUsername().equals(user.getUsername()) && !user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new ApiException(ErrorCode.INVALID_USER);
         }
     }

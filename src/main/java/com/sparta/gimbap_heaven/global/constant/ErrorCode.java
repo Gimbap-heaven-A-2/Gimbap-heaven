@@ -39,6 +39,8 @@ public enum ErrorCode {
 
     INVALID_MENU(HttpStatus.BAD_REQUEST,"일치하는 메뉴 정보가 없습니다."),
 
+    ALREADY_EXIST_IN_CART(HttpStatus.BAD_REQUEST,"이미 장바구니에 담긴 메뉴입니다."),
+
     INVALID_CART(HttpStatus.BAD_REQUEST,"장바구니가 비어있습니다."),
 
     INVALID_MENU_IN_CART(HttpStatus.BAD_REQUEST,"장바구니에 해당 메뉴가 존재하지 않습니다."),
