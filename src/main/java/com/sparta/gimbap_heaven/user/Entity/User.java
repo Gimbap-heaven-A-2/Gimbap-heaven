@@ -50,4 +50,7 @@ public class User {
         this.money=requestDto.getMoney();
     }
 
+    public void useMoney(Double totalPrice) {
+        this.money -= totalPrice;
+    }
 }

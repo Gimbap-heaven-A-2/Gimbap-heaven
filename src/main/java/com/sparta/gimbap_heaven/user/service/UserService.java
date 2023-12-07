@@ -2,6 +2,8 @@ package com.sparta.gimbap_heaven.user.service;
 
 import com.sparta.gimbap_heaven.jwt.RefreshToken;
 import com.sparta.gimbap_heaven.jwt.RefreshTokenRepository;
+import com.sparta.gimbap_heaven.global.constant.ErrorCode;
+import com.sparta.gimbap_heaven.global.exception.ApiException;
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
 import com.sparta.gimbap_heaven.user.Entity.User;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
@@ -95,8 +97,8 @@ public class UserService {
         userRepository.save(userById);
     }
     @Transactional
-    public void updateMoney(Long id, UpdateMoneyRequestDto requestDto, User user) {
-        User updateUser = userRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("사용자가 없어요"));
+    public void updateMoney(Long userId, UpdateMoneyRequestDto requestDto, User user) {
+        User updateUser = userRepository.findById(userId).orElseThrow(()-> new ApiException(ErrorCode.INVALID_USER_CHECK));
 
         if(user.getUsername().equals(updateUser.getUsername())){
             updateUser.updateMoney(requestDto);
@@ -107,11 +109,9 @@ public class UserService {
 
     }
 
-    public UserResponseDto findOneUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(()->new IllegalArgumentException("사용자가 없어요"));
+    public UserResponseDto findOneUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(()->new ApiException(ErrorCode.INVALID_USER_CHECK));
         return new UserResponseDto(user);
     }
-
-
 }
 

@@ -1,6 +1,8 @@
 package com.sparta.gimbap_heaven.review.service;
 
 
+import com.sparta.gimbap_heaven.global.constant.ErrorCode;
+import com.sparta.gimbap_heaven.global.exception.ApiException;
 import com.sparta.gimbap_heaven.order.entity.Order;
 import com.sparta.gimbap_heaven.order.repository.OrderRepository;
 import com.sparta.gimbap_heaven.review.repository.ReviewRepository;
@@ -34,14 +36,14 @@ public class ReviewService {
     public ReviewResponseDto createReview(Long orderId,
                                           ReviewRequestDto requestDto,
                                           User user) {
-        Order order = orderRepository.findById(orderId).orElseThrow(()-> new IllegalArgumentException("주문이 없어요"));
+        Order order = orderRepository.findById(orderId).orElseThrow(()-> new ApiException(ErrorCode.INVALID_ORDER));
         Review review= reviewRepository.save(new Review(requestDto,order,user));
 
         return new ReviewResponseDto(review);
     }
 
     public ReviewResponseDto findOneReview(Long id) {
-        Review review = reviewRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("리뷰가 없어요"));
+        Review review = reviewRepository.findById(id).orElseThrow(()-> new ApiException(ErrorCode.INVALID_REVIEW));
         return new ReviewResponseDto(review);
     }
 
@@ -58,13 +60,13 @@ public class ReviewService {
 
     @Transactional
     public ReviewResponseDto updateReview(Long id, ReviewRequestDto requestDto, User user) {
-        Review review = reviewRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("리뷰가 없어요"));
+        Review review = reviewRepository.findById(id).orElseThrow(()-> new ApiException(ErrorCode.INVALID_REVIEW));
         if(user.getUsername().equals(review.getUser().getUsername()) || user.getRole()== UserRoleEnum.ADMIN){
             review.update(requestDto);
             return new ReviewResponseDto(review);
         }
         else {
-            throw new IllegalArgumentException("작성자가 일치하지 않습니다.");
+            throw new ApiException(ErrorCode.INVALID_MADE);
         }
 
     }
@@ -73,12 +75,12 @@ public class ReviewService {
 
 
     public void deleteReview(Long id, User user){
-        Review review = reviewRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("리뷰가 없어요"));
+        Review review = reviewRepository.findById(id).orElseThrow(()-> new ApiException(ErrorCode.INVALID_REVIEW));
         if (user.getUsername().equals(review.getUser().getUsername()) || user.getRole()== UserRoleEnum.ADMIN){
             reviewRepository.delete(review);
         }
         else {
-            throw new IllegalArgumentException("작성자가 일치하지 않습니다.");
+            throw new ApiException(ErrorCode.INVALID_MADE);
         }
     }
 

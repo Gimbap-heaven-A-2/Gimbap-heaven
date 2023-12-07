@@ -24,15 +24,12 @@ public class ReviewController {
     private final ReviewService reviewService;
 
 
-
-
-
-    @PostMapping("/{order_id}")
-    public ResponseEntity<SuccessResponse> createReview(@PathVariable Long order_id,
+    @PostMapping("/order/{id}")
+    public ResponseEntity<SuccessResponse> createReview(@PathVariable Long id,
                                                         @RequestBody ReviewRequestDto requestDto,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
-        reviewService.createReview(order_id,requestDto,userDetails.getUser());
-        return ResponseEntity.status(CREATE_REVIEW.getHttpStatus()).body(new SuccessResponse(CREATE_REVIEW));
+        ReviewResponseDto responseDto= reviewService.createReview(id,requestDto,userDetails.getUser());
+        return ResponseEntity.status(CREATE_REVIEW.getHttpStatus()).body(new SuccessResponse(CREATE_REVIEW,responseDto));
     }
 
 

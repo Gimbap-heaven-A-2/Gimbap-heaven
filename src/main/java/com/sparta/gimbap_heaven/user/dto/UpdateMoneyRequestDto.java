@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateMoneyRequestDto {
-    private Integer money;
+    private double money;
 }

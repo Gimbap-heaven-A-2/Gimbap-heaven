@@ -8,6 +8,7 @@ import com.sparta.gimbap_heaven.menu.repository.MenuRepository;
 import jakarta.annotation.PreDestroy;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableScheduling
 @EnableJpaAuditing
