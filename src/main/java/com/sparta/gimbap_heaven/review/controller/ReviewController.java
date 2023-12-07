@@ -24,9 +24,6 @@ public class ReviewController {
     private final ReviewService reviewService;
 
 
-
-
-
     @PostMapping("/{order_id}")
     public ResponseEntity<SuccessResponse> createReview(@PathVariable Long order_id,
                                                         @RequestBody ReviewRequestDto requestDto,
