@@ -13,11 +13,13 @@ import com.sparta.gimbap_heaven.order.repository.OrderRepository;
 
 import com.sparta.gimbap_heaven.user.Entity.User;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
+import com.sparta.gimbap_heaven.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final BasketRepository basketRepository;
+    private final UserRepository userRepository;
 
 
     @Transactional
@@ -128,8 +131,10 @@ public class OrderService {
             throw new ApiException(ErrorCode.INVALID_MONEY);
         }
 
-        user.useMoney(order.getTotalPrice());
         checkUser(user, order);
+
+        Optional<User> orderedUser = userRepository.findById(user.getId());
+        orderedUser.get().useMoney(order.getTotalPrice());
         order.updateIsOrdered(true);
     }
 
