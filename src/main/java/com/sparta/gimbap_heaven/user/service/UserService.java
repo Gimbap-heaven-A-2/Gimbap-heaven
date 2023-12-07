@@ -6,11 +6,10 @@ import com.sparta.gimbap_heaven.global.constant.ErrorCode;
 import com.sparta.gimbap_heaven.global.exception.ApiException;
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
 import com.sparta.gimbap_heaven.user.Entity.User;
+import com.sparta.gimbap_heaven.user.Entity.UserPassword;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
-import com.sparta.gimbap_heaven.user.dto.SignupRequestDto;
-import com.sparta.gimbap_heaven.user.dto.UpdateMoneyRequestDto;
-import com.sparta.gimbap_heaven.user.dto.UserResponseDto;
-import com.sparta.gimbap_heaven.user.dto.updateProfileRequestDto;
+import com.sparta.gimbap_heaven.user.dto.*;
+import com.sparta.gimbap_heaven.user.repository.UserPasswordRepository;
 import com.sparta.gimbap_heaven.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +34,7 @@ public class UserService {
     // ADMIN_TOKEN
     @Value("${jwt.adminToken}")
     private String ADMIN_TOKEN ;
+    private final UserPasswordRepository userPasswordRepository;
 
 
     public void signup(SignupRequestDto requestDto) {
@@ -118,6 +118,53 @@ public class UserService {
 
     public User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ApiException(ErrorCode.INVALID_USER));
+    }
+
+    @Transactional
+    public void updatePassword(Long id, PasswordRequestDto requestDto, User user) {
+        String password=requestDto.getPassword();
+        String changePassword = passwordEncoder.encode(requestDto.getChangePassword());
+        User userCheck = userRepository.findById(id).orElseThrow(()->new ApiException(ErrorCode.INVALID_USER_CHECK));
+        if(userCheck.getUsername().equals(user.getUsername())){   //유저이름이 맞는지 확인
+            if(!passwordEncoder.matches(password,userCheck.getPassword())){
+                throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");  //api 에러 만들기
+            }
+
+            Optional<UserPassword> userPassword = userPasswordRepository.findByUserId(userCheck.getId());
+
+            if(userPassword.isPresent()){  //값이 있으면 true
+                System.out.println("  userPassword true");
+                List<UserPassword> userPasswordList = userPasswordRepository.findAllByUserIdOrderByCreatedAt(userCheck.getId());
+                for(UserPassword userPass : userPasswordList){
+                    System.out.println("  ");
+                    if(passwordEncoder.matches(changePassword,userPass.getChangepassword())){
+                        throw new IllegalArgumentException("일치하는 비밀번호가 있습니다.");
+                    }
+                }
+
+                if(userPasswordList.size()==3){
+                    UserPassword psw = userPasswordList.get(0);
+                    userPasswordRepository.delete(psw);
+                }
+                userCheck.updatePassword(requestDto);
+                UserPassword userPsw= new UserPassword(requestDto,userCheck);
+                userPasswordRepository.save(userPsw);
+            }
+
+            else {  //값이 없으면 false
+                System.out.println("  userPassword false");
+                userCheck.updatePassword(requestDto);
+                UserPassword userPsw= new UserPassword(requestDto,userCheck);
+                userPasswordRepository.save(userPsw);
+            }
+
+
+
+        }
+        else {
+            throw new ApiException(ErrorCode.INVALID_MADE);
+        }
+
     }
 }
 

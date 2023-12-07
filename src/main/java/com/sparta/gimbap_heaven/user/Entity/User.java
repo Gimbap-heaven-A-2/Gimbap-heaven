@@ -1,6 +1,7 @@
 package com.sparta.gimbap_heaven.user.Entity;
 
 
+import com.sparta.gimbap_heaven.user.dto.PasswordRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -50,5 +51,9 @@ public class User {
 
     public void useMoney(Double totalPrice) {
         this.money -= totalPrice;
+    }
+
+    public void updatePassword(PasswordRequestDto requestDto){
+        this.password=requestDto.getPassword();
     }
 }
