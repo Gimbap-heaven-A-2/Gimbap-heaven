@@ -1,13 +1,11 @@
 package com.sparta.gimbap_heaven.global.dto;
 
-import org.springframework.http.HttpStatus;
-
-import com.sparta.gimbap_heaven.global.constant.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sparta.gimbap_heaven.global.constant.ResponseCode;
-
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SuccessResponse {
 	private int status;
 

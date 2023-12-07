@@ -47,10 +47,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 if (!jwtUtil.validateToken(accessTokenValue)) {
                     log.error("유효하지않은 AccesToken");
 
-                    res.setStatus(400);
-                    res.setCharacterEncoding("utf-8");
-                    PrintWriter writer = res.getWriter();
-                    writer.println("AccessToken이 유효하지 않습니다.");
+//                    res.setStatus(400);
+//                    res.setCharacterEncoding("utf-8");
+//                    PrintWriter writer = res.getWriter();
+//                    writer.println("AccessToken이 유효하지 않습니다.");
                     return;
                 }
 
