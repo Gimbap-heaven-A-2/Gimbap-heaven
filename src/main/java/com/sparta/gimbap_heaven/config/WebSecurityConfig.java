@@ -1,6 +1,7 @@
 package com.sparta.gimbap_heaven.config;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.gimbap_heaven.jwt.JwtUtil;
 import com.sparta.gimbap_heaven.security.JwtAuthenticationFilter;
 import com.sparta.gimbap_heaven.security.JwtAuthorizationFilter;
@@ -25,10 +26,13 @@ public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
 
-    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration) {
+    private final ObjectMapper objectMapper;
+
+    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration, ObjectMapper objectMapper) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.authenticationConfiguration = authenticationConfiguration;
+        this.objectMapper = objectMapper;
     }
 
     @Bean
@@ -47,7 +51,7 @@ public class WebSecurityConfig {
     // jwt 인가필터
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, objectMapper);
     }
 
     @Bean
@@ -62,8 +66,9 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers("/api/users/sign-up", "/api/auth/login").permitAll() // 회원가입, 로그인요청 인증허가
-                        .requestMatchers("/api/menus", "").permitAll()
+                        .requestMatchers("/api/users/sign-up").permitAll()
+                        .requestMatchers("/api/auth/login").permitAll()// 회원가입, 로그인요청 인증허가
+                        .requestMatchers("/api/menus").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 

@@ -113,10 +113,15 @@ public class JwtUtil {
     // RefreshToken DB 중복 조회 검사
     public boolean checkTokenDBByToken(String token) {
         Claims user = getUserInfoFromToken(token);
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByKeyUsername(user.getSubject());
-        if (refreshToken.isPresent()) {
-            return true;
+        try {
+            Optional<RefreshToken> refreshToken = refreshTokenRepository.findByKeyUsername(user.getSubject());
+            if (refreshToken.isPresent()) {
+                return true;
+            }
+        } catch (IllegalArgumentException e) {
+            return false;
         }
+
         throw new IllegalArgumentException("존재하지 않는 토큰입니다.");
     }
 

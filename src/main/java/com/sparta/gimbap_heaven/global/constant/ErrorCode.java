@@ -13,15 +13,13 @@ public enum ErrorCode {
     // 예외처리를 위해 만든 클래스지만 잘 모릅니다.
 
     // Token Exception
-    UNKNOWN_ERROR(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않습니다."),
+    UNKNOWN_ERROR_NOT_EXIST_REFRESHTOKEN(HttpStatus.BAD_REQUEST, "리프레시 토큰이 존재하지 않습니다. 다시 로그인해주세요."),
 
-    WRONG_TYPE_TOKEN(HttpStatus.BAD_REQUEST, "변조된 토큰입니다."),
+    UNKNOWN_ERROR_NOT_EXIST_ACCESSTOKEN(HttpStatus.BAD_REQUEST, "액세스 토큰이 존재하지 않습니다. 다시 로그인해주세요."),
 
-    EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 토큰입니다."),
+    EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 토큰입니다. 다시 로그인하세요."),
 
-    UNSUPPORTED_TOKEN(HttpStatus.BAD_REQUEST, "변조된 토큰입니다."),
-
-    ACCESS_DENIED(HttpStatus.BAD_REQUEST, "권한이 없습니다."),
+    ACCESS_DENIED(HttpStatus.BAD_REQUEST, "유효하지 못한 토큰입니다."),
 
     // System Exception
     INVALID_USER(HttpStatus.FORBIDDEN,"권한이 없습니다."),

@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ResponseCode {
 
-
+	SUCCESS_REISSUANCETOKEN(OK, "토큰이 재발급되었습니다."),
 
 	CREATE_MENU(OK,"메뉴 생성 완료"),
 	UPDATE_MENU(OK,"메뉴 수정 완료"),
