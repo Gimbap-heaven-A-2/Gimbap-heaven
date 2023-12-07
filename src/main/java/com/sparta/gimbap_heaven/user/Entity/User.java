@@ -54,6 +54,6 @@ public class User {
     }
 
     public void updatePassword(PasswordRequestDto requestDto){
-        this.password=requestDto.getPassword();
+        this.password=requestDto.getChangePassword();
     }
 }

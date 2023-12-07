@@ -50,7 +50,9 @@ public enum ErrorCode {
     INVALID_REVIEW(HttpStatus.BAD_REQUEST,"일치하는 리뷰가 없습니다."),
     INVALID_ORDER(HttpStatus.BAD_REQUEST,"일치하는 오더가 없습니다."),
     INVALID_MADE(HttpStatus.BAD_REQUEST,"작성자가 아닙니다"),
-    INVALID_USER_CHECK(HttpStatus.BAD_REQUEST,"사용자가 아닙니다");
+    INVALID_USER_CHECK(HttpStatus.BAD_REQUEST,"사용자가 아닙니다"),
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다"),
+    INVALID_SUCCESS_PASSWORD(HttpStatus.BAD_REQUEST,"일치하는 비밀번호가 있습니다");
 
     private final HttpStatus httpStatus;
     private final String message;

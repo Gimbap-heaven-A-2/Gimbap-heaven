@@ -123,27 +123,30 @@ public class UserService {
     @Transactional
     public void updatePassword(Long id, PasswordRequestDto requestDto, User user) {
         String password=requestDto.getPassword();
-        String changePassword = passwordEncoder.encode(requestDto.getChangePassword());
+        String chPassword = passwordEncoder.encode(requestDto.getChangePassword());
+        String changePassword=requestDto.getChangePassword();
+        requestDto.setChangePassword(chPassword);
+
+
         User userCheck = userRepository.findById(id).orElseThrow(()->new ApiException(ErrorCode.INVALID_USER_CHECK));
         if(userCheck.getUsername().equals(user.getUsername())){   //유저이름이 맞는지 확인
             if(!passwordEncoder.matches(password,userCheck.getPassword())){
-                throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");  //api 에러 만들기
+                throw new ApiException(ErrorCode.INVALID_PASSWORD);  //api 에러 만들기
             }
 
-            Optional<UserPassword> userPassword = userPasswordRepository.findByUserId(userCheck.getId());
+            List<UserPassword> userPwdList = userPasswordRepository.findAllByUserIdOrderByCreatedAt(userCheck.getId());
 
-            if(userPassword.isPresent()){  //값이 있으면 true
-                System.out.println("  userPassword true");
-                List<UserPassword> userPasswordList = userPasswordRepository.findAllByUserIdOrderByCreatedAt(userCheck.getId());
-                for(UserPassword userPass : userPasswordList){
-                    System.out.println("  ");
+            if(!userPwdList.isEmpty()){  //값이 있으면
+
+
+                for(UserPassword userPass : userPwdList){
                     if(passwordEncoder.matches(changePassword,userPass.getChangepassword())){
-                        throw new IllegalArgumentException("일치하는 비밀번호가 있습니다.");
+                        throw new ApiException(ErrorCode.INVALID_SUCCESS_PASSWORD);
                     }
                 }
 
-                if(userPasswordList.size()==3){
-                    UserPassword psw = userPasswordList.get(0);
+                if(userPwdList.size()==3){
+                    UserPassword psw = userPwdList.get(0);
                     userPasswordRepository.delete(psw);
                 }
                 userCheck.updatePassword(requestDto);
@@ -151,8 +154,7 @@ public class UserService {
                 userPasswordRepository.save(userPsw);
             }
 
-            else {  //값이 없으면 false
-                System.out.println("  userPassword false");
+            else {  //값이 없으면
                 userCheck.updatePassword(requestDto);
                 UserPassword userPsw= new UserPassword(requestDto,userCheck);
                 userPasswordRepository.save(userPsw);

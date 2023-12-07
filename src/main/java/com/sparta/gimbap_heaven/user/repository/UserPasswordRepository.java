@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface UserPasswordRepository extends JpaRepository<UserPassword, Long> {
 
 
-    Optional<UserPassword> findByUserId(Long id);
+    List<UserPassword> findByUserId(Long id);
 
     List<UserPassword> findAllByUserIdOrderByCreatedAt(Long id);
 }
