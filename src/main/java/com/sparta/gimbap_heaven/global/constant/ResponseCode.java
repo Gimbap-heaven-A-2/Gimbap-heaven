@@ -28,7 +28,10 @@ public enum ResponseCode {
 	CREATE_REVIEW(OK,"리뷰 생성 완료"),
 	UPDATE_REVIEW(OK,"리뷰 수정 완료"),
 	DELETE_REVIEW(OK,"리뷰 삭제 완료"),
-	SUCCESS_REVIEW(OK,"리뷰 조회 완료");
+	SUCCESS_REVIEW(OK,"리뷰 조회 완료"),
+
+	UPDATE_MONEY(OK,"사용자 머니 수정 완료"),
+	SUCCESS_USER(OK,"사용자 조회 완료");
 
 
 

@@ -2,6 +2,8 @@ package com.sparta.gimbap_heaven.user.controller;
 
 import com.sparta.gimbap_heaven.global.dto.SuccessResponse;
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
+import com.sparta.gimbap_heaven.user.dto.UpdateMoneyRequestDto;
+import com.sparta.gimbap_heaven.user.dto.UserResponseDto;
 import com.sparta.gimbap_heaven.user.service.UserService;
 import com.sparta.gimbap_heaven.user.dto.SignupRequestDto;
 import com.sparta.gimbap_heaven.user.dto.updateProfileRequestDto;
@@ -16,6 +18,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.sparta.gimbap_heaven.global.constant.ResponseCode.*;
+import static com.sparta.gimbap_heaven.global.constant.ResponseCode.SUCCESS_REVIEW;
 
 @Slf4j
 @RestController
@@ -58,6 +63,20 @@ public class UserController {
 
         userService.putProfile(user_id, profileRequestDto, userDetails);
         return ResponseEntity.ok(new SuccessResponse(200, "내 정보 수정 완료"));
+    }
+
+    @GetMapping("/users/{user_id}")
+    public ResponseEntity<SuccessResponse> getOneUser(@PathVariable Long user_id){
+        UserResponseDto responseDto = userService.findOneUser(user_id);
+        return ResponseEntity.status(SUCCESS_USER.getHttpStatus()).body(new SuccessResponse(SUCCESS_USER,responseDto));
+    }
+
+    @PutMapping("/users/{user_id}/money")
+    public ResponseEntity<SuccessResponse> updateMoney(@PathVariable Long user_id,
+                                                       @RequestBody UpdateMoneyRequestDto requestDto,
+                                                       @AuthenticationPrincipal UserDetailsImpl userDetails){
+        userService.updateMoney(user_id,requestDto,userDetails.getUser());
+        return ResponseEntity.status(UPDATE_MONEY.getHttpStatus()).body(new SuccessResponse(UPDATE_MONEY));
     }
 
 }
