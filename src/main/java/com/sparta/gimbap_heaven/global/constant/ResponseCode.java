@@ -38,8 +38,10 @@ public enum ResponseCode {
 	UPDATE_SUCCESS_PASSWORD(OK,"사용자 비밀번호 수정 완료"),
 
 	CREATE_RESTAURANT(OK,"식당 생성완료"),
+	SUCCESS_RESTAURANT(OK,"식당 조회완료"),
 	UPDATE_RESTAURANT(OK,"식당 수정 완료"),
 	DELETE_RESTAURANT(OK,"식당 삭제 완료"),
+	ADMIN_SUCCESS_RESTAURANT(OK,"관리자 식당 정보 조회 완료"),
 
 	SUCCESS_LIKES_RESTAURANT(OK, "좋아요 설정 완료"),
 	DELETE_LIKES_RESTAURANT(OK, "좋아요 취소 완료"),
