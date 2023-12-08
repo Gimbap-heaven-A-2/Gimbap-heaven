@@ -14,7 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sparta.gimbap_heaven.global.exception.ApiException;
 import com.sparta.gimbap_heaven.menu.entity.Menu;
+import com.sparta.gimbap_heaven.restaurant.dto.AdminRestaurantResponseDto;
+import com.sparta.gimbap_heaven.restaurant.dto.AllRestaurantResponseDto;
 import com.sparta.gimbap_heaven.restaurant.dto.RestaurantRequestDto;
+import com.sparta.gimbap_heaven.restaurant.dto.RestaurantResponseDto;
 import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
 import com.sparta.gimbap_heaven.restaurant.repository.RestaurantRepository;
 import com.sparta.gimbap_heaven.user.Entity.User;
@@ -44,6 +47,17 @@ public class RestaurantService {
 		restaurant.addRestaurant(menus);
 
 		restaurantRepository.save(restaurant);
+	}
+
+	public AllRestaurantResponseDto getAllRestaurant(){
+		List<Restaurant> restaurants = restaurantRepository.findAll();
+		return new AllRestaurantResponseDto(restaurants);
+	}
+
+	public AdminRestaurantResponseDto getAdminRestaurant(Long id,User user) {
+		Restaurant restaurant = findRestaurant(id);
+		checkUserRoleAdmin(restaurant,user);
+		return new AdminRestaurantResponseDto(restaurant);
 	}
 
 
