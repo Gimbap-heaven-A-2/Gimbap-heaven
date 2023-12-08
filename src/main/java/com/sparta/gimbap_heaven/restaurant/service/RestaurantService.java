@@ -79,7 +79,6 @@ public class RestaurantService {
 	// IOE글로벌 Exception 추가
 	public List<String[]> separatingFile(List<MultipartFile> multipartFiles) throws IOException {
 		List<String[]> datas = new ArrayList<>();
-		int count =0;
 		for (MultipartFile file : multipartFiles) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()));
 			String line;
@@ -87,8 +86,7 @@ public class RestaurantService {
 			while ((line = br.readLine()) != null) {
 				data = line.split(",");
 			}
-			datas.set(count,data);
-			count++;
+			datas.add(data);
 		}
 		return datas;
 	}
