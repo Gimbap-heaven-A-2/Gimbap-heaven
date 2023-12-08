@@ -89,4 +89,10 @@ public class UserController {
         return ResponseEntity.status(SUCCESS_LIKES_RESTAURANT_LIST.getHttpStatus()).body(new SuccessResponse(SUCCESS_LIKES_RESTAURANT_LIST, response));
     }
 
+    @GetMapping("/users/likes/admin")
+    public ResponseEntity<?> getLikesListByAdmin(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<LikeResponseDto> response = userService.getLikeRestaurantListByAdmin(userDetails.getUser());
+        return ResponseEntity.status(SUCCESS_LIKES_RESTAURANT_LIST.getHttpStatus()).body(new SuccessResponse(SUCCESS_LIKES_RESTAURANT_LIST, response));
+    }
+
 }
