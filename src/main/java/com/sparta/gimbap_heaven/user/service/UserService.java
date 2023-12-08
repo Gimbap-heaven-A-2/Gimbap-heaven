@@ -21,9 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -187,9 +185,7 @@ public class UserService {
                 () -> new ApiException(ErrorCode.INVALID_USER_CHECK)
         );
 
-        if (!user.getUsername().equals(likeUser.getUsername())) {
-            throw new ApiException(ErrorCode.INVALID_USER);
-        }
+        checkUserOrRole(user, likeUser);
 
         Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
         Like likes = likeRepository.findByUserAndRestaurant(likeUser, restaurant).orElseGet(() -> new Like(likeUser, restaurant));
@@ -201,15 +197,14 @@ public class UserService {
         likeRepository.save(likes);
     }
 
+
     @Transactional
     public void cancelLikeRestaurant(Long id, Long restaurantId, User user) {
         User cancelUser = userRepository.findById(id).orElseThrow(
                 () -> new ApiException(ErrorCode.INVALID_USER_CHECK)
         );
 
-        if (!user.getUsername().equals(cancelUser.getUsername())) {
-            throw new ApiException(ErrorCode.INVALID_USER);
-        }
+        checkUserOrRole(user, cancelUser);
 
         Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
         Like likes = likeRepository.findByUserAndRestaurant(cancelUser, restaurant).orElseThrow(
@@ -225,9 +220,7 @@ public class UserService {
                 () -> new ApiException(ErrorCode.INVALID_USER_CHECK)
         );
 
-        if (!user.getUsername().equals(requestUser.getUsername())) {
-            throw new ApiException(ErrorCode.INVALID_USER);
-        }
+        checkUserOrRole(user, requestUser);
 
         List<Like> likes = likeRepository.findAllByUser(requestUser);
         List<String> restaurantList = new ArrayList<>();
@@ -238,5 +231,36 @@ public class UserService {
         return new LikeResponseDto(requestUser.getUsername(), restaurantList);
     }
 
+    private static void checkUserOrRole(User loginUser, User checkUser) {
+        if (!loginUser.getUsername().equals(checkUser.getUsername()) && !loginUser.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new ApiException(ErrorCode.INVALID_USER);
+        }
+    }
+
+    public List<LikeResponseDto> getLikeRestaurantListByAdmin(User user) {
+        if (!user.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new ApiException(ErrorCode.INVALID_USER);
+        }
+
+        List<Like> likes = likeRepository.findAll();
+        Map<String, List<String>> map = new HashMap<>();
+
+        for (Like like : likes) {
+            List<String> names = new ArrayList<>();
+            if (map.containsKey(like.getUser().getUsername())) {
+                names = map.get(like.getUser().getUsername());
+            }
+
+            names.add(like.getRestaurant().getRestaurantName());
+            map.put(like.getUser().getUsername(), names);
+        }
+
+        List<LikeResponseDto> responseDtos = new ArrayList<>();
+        for (String username : map.keySet()) {
+            responseDtos.add(new LikeResponseDto(username, map.get(username)));
+        }
+
+        return responseDtos;
+    }
 }
 
