@@ -5,6 +5,7 @@ import static com.sparta.gimbap_heaven.global.constant.ResponseCode.*;
 import java.io.IOException;
 import java.util.List;
 
+import com.sparta.gimbap_heaven.restaurant.dto.ManagerLikeResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -80,6 +81,25 @@ public class RestaurantController {
 			.body(new SuccessResponse(DELETE_RESTAURANT));
 	}
 
+	@PostMapping("/restaurant/{restaurant_id}/likes/{user_id}")
+	public ResponseEntity<SuccessResponse> likeRestaurant(@PathVariable Long restaurant_id, @PathVariable Long user_id,
+														  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
+		restaurantService.likeRestaurant(user_id, restaurant_id, userDetails.getUser());
+		return ResponseEntity.status(SUCCESS_LIKES_RESTAURANT.getHttpStatus()).body(new SuccessResponse(SUCCESS_LIKES_RESTAURANT));
+	}
+
+	@DeleteMapping("/restaurant/{restaurant_id}/likes/{user_id}")
+	public ResponseEntity<SuccessResponse> cancelLikeRestaurant(@PathVariable Long restaurant_id, @PathVariable Long user_id,
+																@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		restaurantService.cancelLikeRestaurant(user_id, restaurant_id, userDetails.getUser());
+		return ResponseEntity.status(DELETE_LIKES_RESTAURANT.getHttpStatus()).body(new SuccessResponse(DELETE_LIKES_RESTAURANT));
+	}
+
+	@GetMapping("/restaurant/{restaurant_id}/likes/admin")
+	public ResponseEntity<?> getLikesListByRestaurant(@PathVariable Long restaurant_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		ManagerLikeResponseDto response = restaurantService.getLikesByAdmin(restaurant_id, userDetails.getUser());
+		return ResponseEntity.status(SUCCESS_LIKES_USERS_LIST.getHttpStatus()).body(new SuccessResponse(SUCCESS_LIKES_RESTAURANT_LIST, response));
+	}
 
 }

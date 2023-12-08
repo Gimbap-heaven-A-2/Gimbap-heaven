@@ -190,44 +190,6 @@ public class UserService {
 
     }
 
-    @Transactional
-    public void likeRestaurant(Long id, Long restaurantId, User user) {
-        User likeUser = userRepository.findById(id).orElseThrow(
-                () -> new ApiException(ErrorCode.INVALID_USER_CHECK)
-        );
-
-        if (!user.getUsername().equals(likeUser.getUsername())) {
-            throw new ApiException(ErrorCode.INVALID_USER);
-        }
-
-        // Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
-        // Like likes = likeRepository.findByUserAndRestaurant(likeUser, restaurant).orElseGet(() -> new Like(likeUser, restaurant));
-
-        // if (likes.getId() != null) {
-        //     throw new ApiException(ErrorCode.ALREADY_LIKE_RESTAURANT);
-        // }
-        //
-        // likeRepository.save(likes);
-    }
-
-    @Transactional
-    public void cancelLikeRestaurant(Long id, Long restaurantId, User user) {
-        User cancelUser = userRepository.findById(id).orElseThrow(
-                () -> new ApiException(ErrorCode.INVALID_USER_CHECK)
-        );
-
-        if (!user.getUsername().equals(cancelUser.getUsername())) {
-            throw new ApiException(ErrorCode.INVALID_USER);
-        }
-
-        // Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
-        // Like likes = likeRepository.findByUserAndRestaurant(cancelUser, restaurant).orElseThrow(
-        //         () -> new ApiException(ErrorCode.NON_LIKES_RESTAURANT)
-        // );
-
-        // likeRepository.delete(likes);
-
-    }
 
     public LikeResponseDto getLikeRestaurantList(Long id, User user) {
         User requestUser = userRepository.findById(id).orElseThrow(
