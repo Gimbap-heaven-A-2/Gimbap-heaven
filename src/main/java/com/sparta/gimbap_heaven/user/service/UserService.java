@@ -22,9 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -209,10 +207,40 @@ public class UserService {
         return new LikeResponseDto(requestUser.getUsername(), restaurantList);
     }
 
+    public List<LikeResponseDto> getLikeRestaurantListByAdmin(User user) {
+        checkUserIsAdmin(user);
+
+        Map<String, List<String>> map = new HashMap<>();
+        List<Like> likes = likeRepository.findAll();
+        List<LikeResponseDto> responseDtos = new ArrayList<>();
+
+        for (Like like : likes) {
+            List<String> list = new ArrayList<>();
+
+            if (map.containsKey(like.getUser().getUsername())) {
+                list = map.get(like.getUser().getUsername());
+            }
+
+            list.add(like.getRestaurant().getRestaurantName());
+            map.put(like.getUser().getUsername(), list);
+        }
+
+        for (String username : map.keySet()) {
+            responseDtos.add(new LikeResponseDto(username, map.get(username)));
+        }
+
+        return responseDtos;
+    }
+
+    private void checkUserIsAdmin(User user) {
+        if (!user.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new ApiException(ErrorCode.INVALID_USER);
+        }
+    }
+
     public User findNameByUser(String username){
         return userRepository.findByUsername(username).orElseThrow(
             () -> new ApiException(ErrorCode.INVALID_USER));
     }
-
 }
 
