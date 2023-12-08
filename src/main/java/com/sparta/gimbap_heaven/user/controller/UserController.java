@@ -84,7 +84,7 @@ public class UserController {
 
     @PutMapping("/users/{id}/password")
     public ResponseEntity<SuccessResponse> updatePassword(@PathVariable Long id,
-                                                          @RequestBody PasswordRequestDto requestDto,
+                                                          @Valid @RequestBody PasswordRequestDto requestDto,
                                                           @AuthenticationPrincipal UserDetailsImpl userDetails){
         userService.updatePassword(id,requestDto,userDetails.getUser());
         return ResponseEntity.status(UPDATE_SUCCESS_PASSWORD.getHttpStatus()).body(new SuccessResponse(UPDATE_SUCCESS_PASSWORD));
