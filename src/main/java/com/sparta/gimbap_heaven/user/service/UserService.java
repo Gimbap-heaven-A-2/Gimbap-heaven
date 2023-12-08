@@ -1,11 +1,8 @@
 package com.sparta.gimbap_heaven.user.service;
 
-import com.sparta.gimbap_heaven.jwt.RefreshToken;
-import com.sparta.gimbap_heaven.jwt.RefreshTokenRepository;
 import com.sparta.gimbap_heaven.global.constant.ErrorCode;
 import com.sparta.gimbap_heaven.global.exception.ApiException;
-import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
-import com.sparta.gimbap_heaven.restaurant.service.RestaurantService;
+import com.sparta.gimbap_heaven.jwt.RefreshTokenRepository;
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
 import com.sparta.gimbap_heaven.user.Entity.Like;
 import com.sparta.gimbap_heaven.user.Entity.User;
@@ -249,7 +246,7 @@ public class UserService {
 
     public User findNameByUser(String username){
         return userRepository.findByUsername(username).orElseThrow(
-            () -> new ApiException(ErrorCode.INVALID_USER));
+            () -> new ApiException(ErrorCode.INVALID_MANAGER));
     }
 
 }

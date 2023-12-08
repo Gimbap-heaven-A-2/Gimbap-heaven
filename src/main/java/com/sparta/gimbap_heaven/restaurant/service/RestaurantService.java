@@ -1,6 +1,18 @@
 package com.sparta.gimbap_heaven.restaurant.service;
 
-import static com.sparta.gimbap_heaven.global.constant.ErrorCode.*;
+import com.sparta.gimbap_heaven.global.exception.ApiException;
+import com.sparta.gimbap_heaven.menu.entity.Menu;
+import com.sparta.gimbap_heaven.restaurant.dto.AdminRestaurantResponseDto;
+import com.sparta.gimbap_heaven.restaurant.dto.AllRestaurantResponseDto;
+import com.sparta.gimbap_heaven.restaurant.dto.RestaurantRequestDto;
+import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
+import com.sparta.gimbap_heaven.restaurant.repository.RestaurantRepository;
+import com.sparta.gimbap_heaven.user.Entity.User;
+import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
+import com.sparta.gimbap_heaven.user.service.UserService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,21 +20,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.sparta.gimbap_heaven.global.exception.ApiException;
-import com.sparta.gimbap_heaven.menu.entity.Menu;
-import com.sparta.gimbap_heaven.restaurant.dto.AdminRestaurantResponseDto;
-import com.sparta.gimbap_heaven.restaurant.dto.AllRestaurantResponseDto;
-import com.sparta.gimbap_heaven.restaurant.dto.RestaurantRequestDto;
-import com.sparta.gimbap_heaven.restaurant.dto.RestaurantResponseDto;
-import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
-import com.sparta.gimbap_heaven.restaurant.repository.RestaurantRepository;
-import com.sparta.gimbap_heaven.user.Entity.User;
-import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
-import com.sparta.gimbap_heaven.user.service.UserService;
+import static com.sparta.gimbap_heaven.global.constant.ErrorCode.INVALID_RESTAURANT;
+import static com.sparta.gimbap_heaven.global.constant.ErrorCode.INVALID_USER;
 
 @Service
 public class RestaurantService {
@@ -34,15 +33,15 @@ public class RestaurantService {
 		this.userService = userService;
 	}
 
-	public void createRestaurant(List<MultipartFile> files, User user) throws IOException {
+	public void createRestaurant(List<MultipartFile> files, User user) throws Exception {
 		checkUserRoleAdmin(user);
 		List<String[]> datas = separatingFile(files);
 		for (String[] data: datas) {
 			String managerName = data[0];
 
-			User mabagerUser = userService.findNameByUser(managerName);
+			User managerUser = userService.findNameByUser(managerName);
 			RestaurantRequestDto restaurantRequestDto= restaurantSeparating(data);
-			Restaurant restaurant = new Restaurant(restaurantRequestDto, mabagerUser);
+			Restaurant restaurant = new Restaurant(restaurantRequestDto, managerUser);
 
 			List<Menu> menus = menusSeparating(data);
 			restaurant.addRestaurant(menus);
@@ -56,7 +55,7 @@ public class RestaurantService {
 		return new AllRestaurantResponseDto(restaurants);
 	}
 
-	public AdminRestaurantResponseDto getAdminRestaurant(Long id,User user) {
+	public AdminRestaurantResponseDto getAdminRestaurant(Long id, User user) {
 		Restaurant restaurant = findRestaurant(id);
 		checkUserRoleAdmin(restaurant,user);
 		return new AdminRestaurantResponseDto(restaurant);
@@ -87,7 +86,7 @@ public class RestaurantService {
 			while ((line = br.readLine()) != null) {
 				data = line.split(",");
 			}
-			datas.set(count,data);
+			datas.add(count,data);
 			count++;
 		}
 		return datas;

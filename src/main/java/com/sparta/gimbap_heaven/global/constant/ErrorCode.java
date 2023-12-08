@@ -24,6 +24,8 @@ public enum ErrorCode {
     // System Exception
     INVALID_USER(HttpStatus.FORBIDDEN,"권한이 없습니다."),
 
+    INVALID_MANAGER(HttpStatus.BAD_REQUEST, "해당 매니저가 존재하지 않습니다."),
+
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "일치하는 토큰이 없습니다."),
 
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST,"잘못된 입력값입니다."),
