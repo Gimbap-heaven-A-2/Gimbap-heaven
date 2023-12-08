@@ -4,6 +4,8 @@ import com.sparta.gimbap_heaven.global.dto.SuccessResponse;
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
 import com.sparta.gimbap_heaven.user.dto.*;
 import com.sparta.gimbap_heaven.user.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 
 import static com.sparta.gimbap_heaven.global.constant.ResponseCode.*;
@@ -42,7 +45,11 @@ public class UserController {
     }
 
     @DeleteMapping("/auth/logout")
-    public ResponseEntity<SuccessResponse> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<SuccessResponse> logout(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
+        Cookie cookie = new Cookie("refreshtoken", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        
         userService.logout(userDetails);
         return ResponseEntity.ok(new SuccessResponse(200, "로그아웃 성공"));
     }
