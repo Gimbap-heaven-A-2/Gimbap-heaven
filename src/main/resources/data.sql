@@ -4,14 +4,15 @@ CREATE TABLE IF NOT EXISTS restaurant(
      restaurant_name VARCHAR(255),
      restaurant_number VARCHAR(255),
      restaurant_address VARCHAR(255),
+     restaurant_money DOUBLE,
      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
      modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 'restaurant' 테이블에 초기 데이터 삽입
-INSERT INTO restaurant (restaurant_name, restaurant_number, restaurant_address, created_at, modified_at)
+INSERT INTO restaurant (restaurant_name, restaurant_number, restaurant_address, restaurant_money, created_at, modified_at)
 SELECT *, NOW(), NOW() FROM (
-        SELECT '김밥천국' AS restaurant_name, '02-1234-5678' AS restaurant_number, '서울시 강남구' AS restaurant_address
+        SELECT '김밥천국' AS restaurant_name, '02-1234-5678' AS restaurant_number, '서울시 강남구' AS restaurant_address , 0 AS restaurant_money
 --        UNION ALL
 --        SELECT '야나두김밥', '02-9876-5432', '서울시 서초구'
 --        UNION ALL
@@ -22,6 +23,7 @@ WHERE NOT EXISTS (
     WHERE restaurant.restaurant_name = test.restaurant_name
       AND restaurant.restaurant_number = test.restaurant_number
       AND restaurant.restaurant_address = test.restaurant_address
+      AND restaurant.restaurant_money = test.restaurant_money
 );
 
 -- 'menu' 테이블 생성

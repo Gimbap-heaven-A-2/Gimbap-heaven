@@ -145,6 +145,10 @@ public class OrderService {
 
         User orderedUser = userService.findUser(user.getId());
         orderedUser.useMoney(order.getTotalPrice());
+
+        Restaurant restaurant = order.getRestaurant();
+        restaurant.saveMoney(order.getTotalPrice());
+
         order.updateIsOrdered(true);
     }
 

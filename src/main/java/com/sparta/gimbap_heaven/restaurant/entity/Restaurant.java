@@ -18,8 +18,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @Entity
@@ -39,6 +43,9 @@ public class Restaurant extends BaseTimeEntity {
 	@Column
 	private String restaurantAddress;
 
+	@Column
+	private double restaurantMoney;
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -49,7 +56,7 @@ public class Restaurant extends BaseTimeEntity {
 		this.restaurantAddress = restaurantRequestDto.getRestaurantAddress();
 		this.restaurantName = restaurantRequestDto.getRestaurantName();
 		this.restaurantNumber = restaurantRequestDto.getRestaurantNumber();
-		this.user = user;
+		this.user = user ;
 	}
 
 	public void updateRestaurant(RestaurantRequestDto restaurantRequestDto){
@@ -65,5 +72,8 @@ public class Restaurant extends BaseTimeEntity {
 	}
 
 
+	public void saveMoney(double totalPrice) {
+		this.restaurantMoney += totalPrice;
+	}
 
 }
