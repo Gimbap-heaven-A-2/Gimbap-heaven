@@ -63,7 +63,7 @@ public class ReviewService {
     @Transactional
     public ReviewResponseDto updateReview(Long id, ReviewRequestDto requestDto, User user) {
         Review review = reviewRepository.findById(id).orElseThrow(()-> new ApiException(ErrorCode.INVALID_REVIEW));
-        if(user.getUsername().equals(review.getUser().getUsername()) || user.getRole()== UserRoleEnum.ADMIN){
+        if(user.getUsername().equals(review.getUser().getUsername()) || user.getRole()== UserRoleEnum.ADMIN || user.getRole()==UserRoleEnum.MANAGER){
             review.update(requestDto);
             return new ReviewResponseDto(review);
         }
@@ -78,7 +78,7 @@ public class ReviewService {
 
     public void deleteReview(Long id, User user){
         Review review = reviewRepository.findById(id).orElseThrow(()-> new ApiException(ErrorCode.INVALID_REVIEW));
-        if (user.getUsername().equals(review.getUser().getUsername()) || user.getRole()== UserRoleEnum.ADMIN){
+        if (user.getUsername().equals(review.getUser().getUsername()) || user.getRole()== UserRoleEnum.ADMIN || user.getRole()==UserRoleEnum.MANAGER ){
             reviewRepository.delete(review);
         }
         else {
