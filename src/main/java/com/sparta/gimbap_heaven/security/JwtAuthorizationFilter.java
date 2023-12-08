@@ -107,6 +107,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 setAuthentication(info.getSubject());
             } catch (Exception e) {
                 log.error(e.getMessage());
+                setResponse(res, ErrorCode.INVALID_USER);
                 return;
             }
         }
