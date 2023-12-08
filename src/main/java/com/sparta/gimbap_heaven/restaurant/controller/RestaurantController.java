@@ -37,7 +37,8 @@ public class RestaurantController {
 
 	@PostMapping("/restaurant")
 	public ResponseEntity<SuccessResponse> createRestaurant(@RequestParam("file") List<MultipartFile> file,
-															@AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+															@AuthenticationPrincipal UserDetailsImpl userDetails) throws
+		Exception {
 
 		restaurantService.createRestaurant(file,userDetails.getUser());
 		return ResponseEntity.status(CREATE_RESTAURANT.getHttpStatus().value())
