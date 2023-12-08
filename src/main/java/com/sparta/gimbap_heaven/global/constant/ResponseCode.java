@@ -32,7 +32,11 @@ public enum ResponseCode {
 
 	UPDATE_MONEY(OK,"사용자 머니 수정 완료"),
 	SUCCESS_USER(OK,"사용자 조회 완료"),
-	UPDATE_SUCCESS_PASSWORD(OK,"사용자 비밀번호 수정 완료");
+	UPDATE_SUCCESS_PASSWORD(OK,"사용자 비밀번호 수정 완료"),
+
+	CREATE_RESTAURANT(OK,"식당 생성완료"),
+	UPDATE_RESTAURANT(OK,"식당 수정 완료"),
+	DELETE_RESTAURANT(OK,"식당 삭제 완료");
 
 
 

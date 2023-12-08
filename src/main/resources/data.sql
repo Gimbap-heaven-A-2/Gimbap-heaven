@@ -12,10 +12,10 @@ CREATE TABLE IF NOT EXISTS restaurant(
 INSERT INTO restaurant (restaurant_name, restaurant_number, restaurant_address, created_at, modified_at)
 SELECT *, NOW(), NOW() FROM (
         SELECT '김밥천국' AS restaurant_name, '02-1234-5678' AS restaurant_number, '서울시 강남구' AS restaurant_address
-        UNION ALL
-        SELECT '야나두김밥', '02-9876-5432', '서울시 서초구'
-        UNION ALL
-        SELECT '어너두김밥', '02-1111-2222', '서울시 마포구'
+--        UNION ALL
+--        SELECT '야나두김밥', '02-9876-5432', '서울시 서초구'
+--        UNION ALL
+--        ELECT '어너두김밥', '02-1111-2222', '서울시 마포구'
     ) AS test
 WHERE NOT EXISTS (
     SELECT 1 FROM restaurant

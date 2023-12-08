@@ -40,6 +40,7 @@ public class MenuService {
 		return new MenuResponseDto(menuRepository.findAllByRestaurantId(id)
 			.orElseThrow(()-> new ApiException(INVALID_MENU)));
 	}
+
 	public MenuResponseDto getFoodTypeMenu(Long id, String type){
 		return new MenuResponseDto(menuRepository.findAllByRestaurantIdAndCategory(id,type)
 			.orElseThrow(()-> new ApiException(INVALID_MENU)));

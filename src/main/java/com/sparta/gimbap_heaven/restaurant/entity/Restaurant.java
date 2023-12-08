@@ -38,11 +38,22 @@ public class Restaurant extends BaseTimeEntity {
 
 	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Menu> menus = new ArrayList<>();
-	public Restaurant(RestaurantRequestDto restaurantRequestDto)
-	{
-		this.restaurantAddress =restaurantRequestDto.getRestaurantAddress();
+	public Restaurant(RestaurantRequestDto restaurantRequestDto) {
+		this.restaurantAddress = restaurantRequestDto.getRestaurantAddress();
 		this.restaurantName = restaurantRequestDto.getRestaurantName();
 		this.restaurantNumber = restaurantRequestDto.getRestaurantNumber();
+	}
+
+	public void updateRestaurant(RestaurantRequestDto restaurantRequestDto){
+		this.restaurantName = restaurantRequestDto.getRestaurantName();
+		this.restaurantAddress = restaurantRequestDto.getRestaurantAddress();
+		this.restaurantNumber = restaurantRequestDto.getRestaurantNumber();
+	}
+	public void addRestaurant(List<Menu> menus){
+		for (Menu menu: menus) {
+			menu.setRestaurant(this);
+		}
+		this.menus.addAll(menus);
 	}
 
 
