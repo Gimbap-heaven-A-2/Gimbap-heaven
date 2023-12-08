@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sparta.gimbap_heaven.global.dto.SuccessResponse;
+import com.sparta.gimbap_heaven.restaurant.dto.AdminRestaurantResponseDto;
+import com.sparta.gimbap_heaven.restaurant.dto.AllRestaurantResponseDto;
 import com.sparta.gimbap_heaven.restaurant.dto.RestaurantRequestDto;
 import com.sparta.gimbap_heaven.restaurant.service.RestaurantService;
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
@@ -37,8 +40,25 @@ public class RestaurantController {
 															@AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
 		restaurantService.createRestaurant(file,userDetails.getUser());
-		return ResponseEntity.status(CREATE_RESTAURANT.getHttpStatus().value()).body(new SuccessResponse(CREATE_RESTAURANT));
+		return ResponseEntity.status(CREATE_RESTAURANT.getHttpStatus().value())
+			.body(new SuccessResponse(CREATE_RESTAURANT));
 
+	}
+
+	@GetMapping("/restaurant")
+	public ResponseEntity<SuccessResponse> getRestaurant(){
+		AllRestaurantResponseDto allRestaurantResponseDto = restaurantService.getAllRestaurant();
+		return ResponseEntity.status(SUCCESS_RESTAURANT.getHttpStatus().value())
+			.body(new SuccessResponse(SUCCESS_RESTAURANT,allRestaurantResponseDto));
+	}
+
+	@GetMapping("/restaurant/{id}/admin")
+	public ResponseEntity<SuccessResponse> getAdminRestaurant(@PathVariable Long id,
+															  @AuthenticationPrincipal UserDetailsImpl userDetails){
+		AdminRestaurantResponseDto adminRestaurantResponseDto
+			= restaurantService.getAdminRestaurant(id, userDetails.getUser());
+		return ResponseEntity.status(ADMIN_SUCCESS_RESTAURANT.getHttpStatus().value())
+			.body(new SuccessResponse(ADMIN_SUCCESS_RESTAURANT,adminRestaurantResponseDto));
 	}
 
 	@PutMapping("/restaurant/{id}")
@@ -46,7 +66,8 @@ public class RestaurantController {
 															@RequestBody RestaurantRequestDto restaurantRequestDto,
 															@AuthenticationPrincipal UserDetailsImpl userDetails){
 		restaurantService.updateRestaurant(id, restaurantRequestDto, userDetails.getUser());
-		return ResponseEntity.status(UPDATE_RESTAURANT.getHttpStatus().value()).body(new SuccessResponse(UPDATE_RESTAURANT));
+		return ResponseEntity.status(UPDATE_RESTAURANT.getHttpStatus().value())
+			.body(new SuccessResponse(UPDATE_RESTAURANT));
 	}
 
 	@DeleteMapping("/restaurant/{id}")
@@ -54,7 +75,8 @@ public class RestaurantController {
 															@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
 		restaurantService.deleteRestaurant(id,userDetails.getUser());
-		return ResponseEntity.status(DELETE_RESTAURANT.getHttpStatus().value()).body(new SuccessResponse(DELETE_RESTAURANT));
+		return ResponseEntity.status(DELETE_RESTAURANT.getHttpStatus().value())
+			.body(new SuccessResponse(DELETE_RESTAURANT));
 	}
 
 

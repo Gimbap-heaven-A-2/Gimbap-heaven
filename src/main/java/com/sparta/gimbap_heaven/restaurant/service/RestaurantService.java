@@ -14,7 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sparta.gimbap_heaven.global.exception.ApiException;
 import com.sparta.gimbap_heaven.menu.entity.Menu;
+import com.sparta.gimbap_heaven.restaurant.dto.AdminRestaurantResponseDto;
+import com.sparta.gimbap_heaven.restaurant.dto.AllRestaurantResponseDto;
 import com.sparta.gimbap_heaven.restaurant.dto.RestaurantRequestDto;
+import com.sparta.gimbap_heaven.restaurant.dto.RestaurantResponseDto;
 import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
 import com.sparta.gimbap_heaven.restaurant.repository.RestaurantRepository;
 import com.sparta.gimbap_heaven.user.Entity.User;
@@ -33,17 +36,30 @@ public class RestaurantService {
 
 	public void createRestaurant(List<MultipartFile> files, User user) throws IOException {
 		checkUserRoleAdmin(user);
-		String[] data = separatingFile(files);
-		String managerName = data[0];
+		List<String[]> datas = separatingFile(files);
+		for (String[] data: datas) {
+			String managerName = data[0];
 
-		User mabagerUser = userService.findNameByUser(managerName);
-		RestaurantRequestDto restaurantRequestDto= restaurantSeparating(data);
-		Restaurant restaurant = new Restaurant(restaurantRequestDto, mabagerUser);
+			User mabagerUser = userService.findNameByUser(managerName);
+			RestaurantRequestDto restaurantRequestDto= restaurantSeparating(data);
+			Restaurant restaurant = new Restaurant(restaurantRequestDto, mabagerUser);
 
-		List<Menu> menus = menusSeparating(data);
-		restaurant.addRestaurant(menus);
+			List<Menu> menus = menusSeparating(data);
+			restaurant.addRestaurant(menus);
 
-		restaurantRepository.save(restaurant);
+			restaurantRepository.save(restaurant);
+		}
+	}
+
+	public AllRestaurantResponseDto getAllRestaurant(){
+		List<Restaurant> restaurants = restaurantRepository.findAll();
+		return new AllRestaurantResponseDto(restaurants);
+	}
+
+	public AdminRestaurantResponseDto getAdminRestaurant(Long id,User user) {
+		Restaurant restaurant = findRestaurant(id);
+		checkUserRoleAdmin(restaurant,user);
+		return new AdminRestaurantResponseDto(restaurant);
 	}
 
 
@@ -61,16 +77,20 @@ public class RestaurantService {
 	}
 
 	// IOE글로벌 Exception 추가
-	public String[] separatingFile(List<MultipartFile> multipartFiles) throws IOException {
-		String[] data = new String[0];
+	public List<String[]> separatingFile(List<MultipartFile> multipartFiles) throws IOException {
+		List<String[]> datas = new ArrayList<>();
+		int count =0;
 		for (MultipartFile file : multipartFiles) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()));
 			String line;
+			String[] data = new String[0];
 			while ((line = br.readLine()) != null) {
 				data = line.split(",");
 			}
+			datas.set(count,data);
+			count++;
 		}
-		return data;
+		return datas;
 	}
 
 	// 식당 데이터 분리
