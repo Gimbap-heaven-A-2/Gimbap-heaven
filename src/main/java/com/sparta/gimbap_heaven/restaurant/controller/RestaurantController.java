@@ -80,6 +80,18 @@ public class RestaurantController {
 			.body(new SuccessResponse(DELETE_RESTAURANT));
 	}
 
+	@PostMapping("/restaurant/{restaurant_id}/likes/{user_id}")
+	public ResponseEntity<SuccessResponse> likeRestaurant(@PathVariable Long restaurant_id, @PathVariable Long user_id,
+														  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
+		restaurantService.likeRestaurant(user_id, restaurant_id, userDetails.getUser());
+		return ResponseEntity.status(SUCCESS_LIKES_RESTAURANT.getHttpStatus()).body(new SuccessResponse(SUCCESS_LIKES_RESTAURANT));
+	}
 
+	@DeleteMapping("/restaurant/{restaurant_id}/likes/{user_id}")
+	public ResponseEntity<SuccessResponse> cancelLikeRestaurant(@PathVariable Long restaurant_id, @PathVariable Long user_id,
+																@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		restaurantService.cancelLikeRestaurant(user_id, restaurant_id, userDetails.getUser());
+		return ResponseEntity.status(DELETE_LIKES_RESTAURANT.getHttpStatus()).body(new SuccessResponse(DELETE_LIKES_RESTAURANT));
+	}
 }

@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sparta.gimbap_heaven.user.service.LikeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,14 +27,12 @@ import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
 import com.sparta.gimbap_heaven.user.service.UserService;
 
 @Service
+@RequiredArgsConstructor
 public class RestaurantService {
 	private final RestaurantRepository restaurantRepository;
 	private final UserService userService;
+	private final LikeService likeService;
 
-	public RestaurantService(RestaurantRepository restaurantRepository, UserService userService) {
-		this.restaurantRepository = restaurantRepository;
-		this.userService = userService;
-	}
 
 	public void createRestaurant(List<MultipartFile> files, User user) throws Exception {
 		checkUserRoleAdmin(user);
@@ -112,6 +112,30 @@ public class RestaurantService {
 		return menus;
 	}
 
+	@Transactional
+	public void likeRestaurant(Long userId, Long restaurantId, User user) {
+		Restaurant restaurant = findRestaurant(restaurantId);
+		User saveUser = userService.findUser(userId);
+
+		checkUserRole(saveUser, user);
+		likeService.findLikeByUserAndRestaurantForSave(restaurant, saveUser);
+	}
+
+	@Transactional
+	public void cancelLikeRestaurant(Long userId, Long restaurantId, User user) {
+		Restaurant restaurant = findRestaurant(restaurantId);
+		User canceluser = userService.findUser(userId);
+
+		checkUserRole(canceluser, user);
+		likeService.cancelLike(restaurant, canceluser);
+
+	}
+
+	private void checkUserRole(User saveUser, User user) {
+		if (!saveUser.getUsername().equals(user.getUsername())) {
+			throw new ApiException(INVALID_USER);
+		}
+	}
 
 	public Restaurant findRestaurant(Long id){
 		return restaurantRepository.findById(id).orElseThrow(
@@ -128,5 +152,4 @@ public class RestaurantService {
 			&& (!user.getRole().equals(UserRoleEnum.ADMIN)))
 			throw new ApiException(INVALID_USER);
 	}
-
 }
