@@ -1,6 +1,7 @@
 package com.sparta.gimbap_heaven.order.repository;
 
 import com.sparta.gimbap_heaven.order.entity.Order;
+import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
 import com.sparta.gimbap_heaven.user.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

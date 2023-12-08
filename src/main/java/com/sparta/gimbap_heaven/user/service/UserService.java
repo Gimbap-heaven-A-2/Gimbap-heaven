@@ -91,7 +91,7 @@ public class UserService {
     @Transactional
     public void logout(UserDetailsImpl userDetails) {
         // 사용자 이름으로 레포지토리에서 토큰조회
-        RefreshToken refreshToken = refreshTokenRepository.findByKeyUsername(userDetails.getUsername())
+        refreshTokenRepository.findByKeyUsername(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("로그아웃 사용자입니다."));
 
         // 로그아웃 처리

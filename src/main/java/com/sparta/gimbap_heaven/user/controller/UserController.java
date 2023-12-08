@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.http.HttpResponse;
@@ -30,18 +31,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/users/sign-up")
-    public ResponseEntity<SuccessResponse> signup(@Valid @RequestBody SignupRequestDto signupRequestDto, BindingResult bindingResult) {
-        // Validation 예외처리
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if (fieldErrors.size() > 0) {
-            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
-            }
-            throw new ValidationException("아이디, 비밀번호, 이메일 양식이 올바르지 않습니다.");
-        }
+    public ResponseEntity<SuccessResponse> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
 
         userService.signup(signupRequestDto);
-        return ResponseEntity.ok(new SuccessResponse(200, "회원 가입 성공"));
+        return ResponseEntity.status(SUCCESS_SIGNUP.getHttpStatus()).body(new SuccessResponse(SUCCESS_SIGNUP));
+
     }
 
     @DeleteMapping("/auth/logout")
@@ -51,27 +45,18 @@ public class UserController {
         response.addCookie(cookie);
         
         userService.logout(userDetails);
-        return ResponseEntity.ok(new SuccessResponse(200, "로그아웃 성공"));
+        return ResponseEntity.status(SUCCESS_LOGOUT.getHttpStatus()).body(new SuccessResponse(SUCCESS_LOGOUT));
     }
 
     @PutMapping("/users/{id}")
     public ResponseEntity<SuccessResponse> editProfile(
             @PathVariable Long id,
             @Valid @RequestBody updateProfileRequestDto profileRequestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            BindingResult bindingResult) {
-
-        // Validation 예외처리
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if (fieldErrors.size() > 0) {
-            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
-            }
-            throw new ValidationException("이메일 양식이 올바르지 않습니다.");
-        }
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+            ) {
 
         userService.putProfile(id, profileRequestDto, userDetails);
-        return ResponseEntity.ok(new SuccessResponse(200, "내 정보 수정 완료"));
+        return ResponseEntity.status(SUCCESS_EDITPROFILE.getHttpStatus()).body(new SuccessResponse(SUCCESS_EDITPROFILE));
     }
 
     @GetMapping("/users/{id}")
