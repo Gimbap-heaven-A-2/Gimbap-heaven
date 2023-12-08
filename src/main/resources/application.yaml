@@ -19,4 +19,5 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET_KEY}
+  managerToken: ${JWT_MANAGER_TOKEN}
   adminToken: ${JWT_ADMIN_TOKEN}

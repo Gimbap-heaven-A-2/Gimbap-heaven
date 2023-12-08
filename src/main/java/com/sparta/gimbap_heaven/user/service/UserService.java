@@ -12,6 +12,7 @@ import com.sparta.gimbap_heaven.user.dto.*;
 import com.sparta.gimbap_heaven.user.repository.UserPasswordRepository;
 import com.sparta.gimbap_heaven.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -33,7 +35,12 @@ public class UserService {
 
     // ADMIN_TOKEN
     @Value("${jwt.adminToken}")
-    private String ADMIN_TOKEN ;
+    private String ADMIN_TOKEN;
+
+    // MANAGER_TOKEN
+    @Value("${jwt.managerToken}")
+    private String MANAGER_TOKEN;
+
     private final UserPasswordRepository userPasswordRepository;
 
 
@@ -56,11 +63,14 @@ public class UserService {
 
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
-        if (requestDto.isAdmin()) {
-            if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
+        if (!(requestDto.getToken() == null)) {
+            if (requestDto.getToken().equals(ADMIN_TOKEN)) {
+                role = UserRoleEnum.ADMIN;
+            } else if (requestDto.getToken().equals(MANAGER_TOKEN)) {
+                role = UserRoleEnum.MANAGER;
+            } else {
                 throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
             }
-            role = UserRoleEnum.ADMIN;
         }
 
         // 사용자 등록
