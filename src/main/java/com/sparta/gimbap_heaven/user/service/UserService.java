@@ -4,28 +4,36 @@ import com.sparta.gimbap_heaven.jwt.RefreshToken;
 import com.sparta.gimbap_heaven.jwt.RefreshTokenRepository;
 import com.sparta.gimbap_heaven.global.constant.ErrorCode;
 import com.sparta.gimbap_heaven.global.exception.ApiException;
+import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
+import com.sparta.gimbap_heaven.restaurant.service.RestaurantService;
 import com.sparta.gimbap_heaven.security.UserDetailsImpl;
+import com.sparta.gimbap_heaven.user.Entity.Like;
 import com.sparta.gimbap_heaven.user.Entity.User;
 import com.sparta.gimbap_heaven.user.Entity.UserPassword;
 import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
 import com.sparta.gimbap_heaven.user.dto.*;
+import com.sparta.gimbap_heaven.user.repository.LikeRepository;
 import com.sparta.gimbap_heaven.user.repository.UserPasswordRepository;
 import com.sparta.gimbap_heaven.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final LikeRepository likeRepository;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -33,8 +41,14 @@ public class UserService {
 
     // ADMIN_TOKEN
     @Value("${jwt.adminToken}")
-    private String ADMIN_TOKEN ;
+    private String ADMIN_TOKEN;
+
+    // MANAGER_TOKEN
+    @Value("${jwt.managerToken}")
+    private String MANAGER_TOKEN;
+
     private final UserPasswordRepository userPasswordRepository;
+
 
 
     public void signup(SignupRequestDto requestDto) {
@@ -56,11 +70,14 @@ public class UserService {
 
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
-        if (requestDto.isAdmin()) {
-            if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
+        if (!(requestDto.getToken() == null)) {
+            if (requestDto.getToken().equals(ADMIN_TOKEN)) {
+                role = UserRoleEnum.ADMIN;
+            } else if (requestDto.getToken().equals(MANAGER_TOKEN)) {
+                role = UserRoleEnum.MANAGER;
+            } else {
                 throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
             }
-            role = UserRoleEnum.ADMIN;
         }
 
         // 사용자 등록
@@ -172,5 +189,68 @@ public class UserService {
         }
 
     }
+
+    @Transactional
+    public void likeRestaurant(Long id, Long restaurantId, User user) {
+        User likeUser = userRepository.findById(id).orElseThrow(
+                () -> new ApiException(ErrorCode.INVALID_USER_CHECK)
+        );
+
+        if (!user.getUsername().equals(likeUser.getUsername())) {
+            throw new ApiException(ErrorCode.INVALID_USER);
+        }
+
+        // Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
+        // Like likes = likeRepository.findByUserAndRestaurant(likeUser, restaurant).orElseGet(() -> new Like(likeUser, restaurant));
+
+        // if (likes.getId() != null) {
+        //     throw new ApiException(ErrorCode.ALREADY_LIKE_RESTAURANT);
+        // }
+        //
+        // likeRepository.save(likes);
+    }
+
+    @Transactional
+    public void cancelLikeRestaurant(Long id, Long restaurantId, User user) {
+        User cancelUser = userRepository.findById(id).orElseThrow(
+                () -> new ApiException(ErrorCode.INVALID_USER_CHECK)
+        );
+
+        if (!user.getUsername().equals(cancelUser.getUsername())) {
+            throw new ApiException(ErrorCode.INVALID_USER);
+        }
+
+        // Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
+        // Like likes = likeRepository.findByUserAndRestaurant(cancelUser, restaurant).orElseThrow(
+        //         () -> new ApiException(ErrorCode.NON_LIKES_RESTAURANT)
+        // );
+
+        // likeRepository.delete(likes);
+
+    }
+
+    public LikeResponseDto getLikeRestaurantList(Long id, User user) {
+        User requestUser = userRepository.findById(id).orElseThrow(
+                () -> new ApiException(ErrorCode.INVALID_USER_CHECK)
+        );
+
+        if (!user.getUsername().equals(requestUser.getUsername())) {
+            throw new ApiException(ErrorCode.INVALID_USER);
+        }
+
+        List<Like> likes = likeRepository.findAllByUser(requestUser);
+        List<String> restaurantList = new ArrayList<>();
+        for (Like like : likes) {
+            restaurantList.add(like.getRestaurant().getRestaurantName());
+        }
+
+        return new LikeResponseDto(requestUser.getUsername(), restaurantList);
+    }
+
+    public User findNameByUser(String username){
+        return userRepository.findByUsername(username).orElseThrow(
+            () -> new ApiException(ErrorCode.INVALID_USER));
+    }
+
 }
 

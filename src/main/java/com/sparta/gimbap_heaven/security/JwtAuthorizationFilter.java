@@ -59,7 +59,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // 쿠키에서 리프레시 토큰가져와서 유효성 검사후  발급
                 String refreshToken = jwtUtil.getTokenFromRequest(req);
                 log.info(refreshToken);
-                if (refreshToken.isEmpty()) {
+                if (refreshToken == null) {
                     log.error("쿠키에 RereshToken이 존재하지 않습니다.");
                     setResponse(res, ErrorCode.UNKNOWN_ERROR_NOT_EXIST_REFRESHTOKEN);
                     return;

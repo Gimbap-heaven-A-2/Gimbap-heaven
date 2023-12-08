@@ -30,8 +30,8 @@ public class MenuService {
 	}
 
 	public void createMenu(Long id, MenuRequestDto menuRequestDto, User user )  {
-		checkUserRoleAdmin(user);
 		Restaurant restaurant = restaurantService.findRestaurant(id);
+		restaurantService.checkUserRoleAdmin(restaurant,user);
 		Menu menu = new Menu(menuRequestDto ,restaurant);
 		menuRepository.save(menu);
 	}
@@ -48,7 +48,9 @@ public class MenuService {
 
 	@Transactional
 	public void updateMenu(Long restaurantId, Long menusId, MenuRequestDto menuRequestDto, User user)  {
-		checkUserRoleAdmin(user);
+		Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
+		restaurantService.checkUserRoleAdmin(restaurant, user);
+
 		Menu menu = menuRepository.findByIdAndRestaurantId(menusId,restaurantId)
 			.orElseThrow(()-> new ApiException(INVALID_MENU));
 		menu.updateMenu(menuRequestDto);
@@ -56,16 +58,14 @@ public class MenuService {
 
 
 	public void deleteMenu(Long restaurantId, Long menusId, User user) {
-		checkUserRoleAdmin(user);
+		Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
+		restaurantService.checkUserRoleAdmin(restaurant, user);
+
 		Menu menu = menuRepository.findByIdAndRestaurantId(menusId, restaurantId)
 			.orElseThrow(()-> new ApiException(INVALID_MENU));
 		menuRepository.delete(menu);
 	}
 
-	public void checkUserRoleAdmin(User user) {
-		 if(!user.getRole().equals(UserRoleEnum.ADMIN))
-			 throw new ApiException(INVALID_USER);
-	}
 
 	public Menu findMenu(Long id) {
 		return menuRepository.findById(id).orElseThrow(
