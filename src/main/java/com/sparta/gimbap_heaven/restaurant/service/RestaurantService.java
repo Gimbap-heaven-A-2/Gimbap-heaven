@@ -34,15 +34,15 @@ public class RestaurantService {
 		this.userService = userService;
 	}
 
-	public void createRestaurant(List<MultipartFile> files, User user) throws IOException {
+	public void createRestaurant(List<MultipartFile> files, User user) throws Exception {
 		checkUserRoleAdmin(user);
 		List<String[]> datas = separatingFile(files);
 		for (String[] data: datas) {
 			String managerName = data[0];
 
-			User mabagerUser = userService.findNameByUser(managerName);
+			User manager = userService.findNameByUser(managerName);
 			RestaurantRequestDto restaurantRequestDto= restaurantSeparating(data);
-			Restaurant restaurant = new Restaurant(restaurantRequestDto, mabagerUser);
+			Restaurant restaurant = new Restaurant(restaurantRequestDto, manager);
 
 			List<Menu> menus = menusSeparating(data);
 			restaurant.addRestaurant(menus);
