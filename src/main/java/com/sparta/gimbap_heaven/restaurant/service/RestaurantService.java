@@ -8,18 +8,17 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sparta.gimbap_heaven.restaurant.dto.*;
+import com.sparta.gimbap_heaven.user.Entity.Like;
 import com.sparta.gimbap_heaven.user.service.LikeService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.Manager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sparta.gimbap_heaven.global.exception.ApiException;
 import com.sparta.gimbap_heaven.menu.entity.Menu;
-import com.sparta.gimbap_heaven.restaurant.dto.AdminRestaurantResponseDto;
-import com.sparta.gimbap_heaven.restaurant.dto.AllRestaurantResponseDto;
-import com.sparta.gimbap_heaven.restaurant.dto.RestaurantRequestDto;
-import com.sparta.gimbap_heaven.restaurant.dto.RestaurantResponseDto;
 import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
 import com.sparta.gimbap_heaven.restaurant.repository.RestaurantRepository;
 import com.sparta.gimbap_heaven.user.Entity.User;
@@ -129,6 +128,19 @@ public class RestaurantService {
 		checkUserRole(canceluser, user);
 		likeService.cancelLike(restaurant, canceluser);
 
+	}
+
+	public ManagerLikeResponseDto getLikesByAdmin(Long restaurantId, User user) {
+		Restaurant restaurant = findRestaurant(restaurantId);
+		checkUserRoleAdmin(restaurant, user);
+
+		List<Like> likes = likeService.getListByRestaurant(restaurant);
+		List<String> names = new ArrayList<>();
+		for (Like like : likes) {
+			names.add(like.getUser().getUsername());
+		}
+
+		return new ManagerLikeResponseDto(restaurant.getRestaurantName(), names);
 	}
 
 	private void checkUserRole(User saveUser, User user) {

@@ -45,7 +45,8 @@ public enum ResponseCode {
 
 	SUCCESS_LIKES_RESTAURANT(OK, "좋아요 설정 완료"),
 	DELETE_LIKES_RESTAURANT(OK, "좋아요 취소 완료"),
-	SUCCESS_LIKES_RESTAURANT_LIST(OK, "사용자가 좋아요한 가게 리스트 조회 완료");
+	SUCCESS_LIKES_RESTAURANT_LIST(OK, "사용자가 좋아요한 가게 리스트 조회 완료"),
+	SUCCESS_LIKES_USERS_LIST(OK,"가게를 좋아요 등록한 사용자 리스트 조회 완료");
 
 
 	private final HttpStatus httpStatus;

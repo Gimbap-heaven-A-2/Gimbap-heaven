@@ -9,6 +9,8 @@ import com.sparta.gimbap_heaven.user.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class LikeService {
@@ -29,5 +31,9 @@ public class LikeService {
         );
 
         likeRepository.delete(like);
+    }
+
+    public List<Like> getListByRestaurant(Restaurant restaurant) {
+        return likeRepository.findAllByRestaurant(restaurant);
     }
 }

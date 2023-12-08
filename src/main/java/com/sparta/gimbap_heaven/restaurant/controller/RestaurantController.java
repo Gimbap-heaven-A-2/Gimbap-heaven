@@ -5,6 +5,7 @@ import static com.sparta.gimbap_heaven.global.constant.ResponseCode.*;
 import java.io.IOException;
 import java.util.List;
 
+import com.sparta.gimbap_heaven.restaurant.dto.ManagerLikeResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -94,4 +95,11 @@ public class RestaurantController {
 		restaurantService.cancelLikeRestaurant(user_id, restaurant_id, userDetails.getUser());
 		return ResponseEntity.status(DELETE_LIKES_RESTAURANT.getHttpStatus()).body(new SuccessResponse(DELETE_LIKES_RESTAURANT));
 	}
+
+	@GetMapping("/restaurant/{restaurant_id}/likes/admin")
+	public ResponseEntity<?> getLikesListByRestaurant(@PathVariable Long restaurant_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		ManagerLikeResponseDto response = restaurantService.getLikesByAdmin(restaurant_id, userDetails.getUser());
+		return ResponseEntity.status(SUCCESS_LIKES_USERS_LIST.getHttpStatus()).body(new SuccessResponse(SUCCESS_LIKES_RESTAURANT_LIST, response));
+	}
+
 }
