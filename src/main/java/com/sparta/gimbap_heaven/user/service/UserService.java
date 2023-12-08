@@ -49,7 +49,6 @@ public class UserService {
 
     private final UserPasswordRepository userPasswordRepository;
 
-    private final RestaurantService restaurantService;
 
 
     public void signup(SignupRequestDto requestDto) {
@@ -201,14 +200,14 @@ public class UserService {
             throw new ApiException(ErrorCode.INVALID_USER);
         }
 
-        Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
-        Like likes = likeRepository.findByUserAndRestaurant(likeUser, restaurant).orElseGet(() -> new Like(likeUser, restaurant));
+        // Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
+        // Like likes = likeRepository.findByUserAndRestaurant(likeUser, restaurant).orElseGet(() -> new Like(likeUser, restaurant));
 
-        if (likes.getId() != null) {
-            throw new ApiException(ErrorCode.ALREADY_LIKE_RESTAURANT);
-        }
-
-        likeRepository.save(likes);
+        // if (likes.getId() != null) {
+        //     throw new ApiException(ErrorCode.ALREADY_LIKE_RESTAURANT);
+        // }
+        //
+        // likeRepository.save(likes);
     }
 
     @Transactional
@@ -221,12 +220,12 @@ public class UserService {
             throw new ApiException(ErrorCode.INVALID_USER);
         }
 
-        Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
-        Like likes = likeRepository.findByUserAndRestaurant(cancelUser, restaurant).orElseThrow(
-                () -> new ApiException(ErrorCode.NON_LIKES_RESTAURANT)
-        );
+        // Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
+        // Like likes = likeRepository.findByUserAndRestaurant(cancelUser, restaurant).orElseThrow(
+        //         () -> new ApiException(ErrorCode.NON_LIKES_RESTAURANT)
+        // );
 
-        likeRepository.delete(likes);
+        // likeRepository.delete(likes);
 
     }
 
@@ -246,6 +245,11 @@ public class UserService {
         }
 
         return new LikeResponseDto(requestUser.getUsername(), restaurantList);
+    }
+
+    public User findNameByUser(String username){
+        return userRepository.findByUsername(username).orElseThrow(
+            () -> new ApiException(ErrorCode.INVALID_USER));
     }
 
 }
