@@ -66,6 +66,10 @@ public class UserService {
         // 사용자 등록
         User user = new User(username, password, email, role);
         userRepository.save(user);
+        UserPassword userPassword = new UserPassword();
+        userPassword.setUser(user);
+        userPassword.setChangepassword(user.getPassword());
+        userPasswordRepository.save(userPassword);
     }
     @Transactional
     public void logout(UserDetailsImpl userDetails) {
@@ -106,7 +110,7 @@ public class UserService {
             return moneySum;
         }
         else {
-            throw new IllegalArgumentException("작성자가 일치하지 않습니다.");
+            throw new ApiException(ErrorCode.INVALID_MADE);
         }
 
     }
