@@ -33,15 +33,15 @@ public class RestaurantService {
 		this.userService = userService;
 	}
 
-	public void createRestaurant(List<MultipartFile> files, User user) throws Exception {
+	public void createRestaurant(List<MultipartFile> files, User user) throws IOException {
 		checkUserRoleAdmin(user);
 		List<String[]> datas = separatingFile(files);
 		for (String[] data: datas) {
 			String managerName = data[0];
 
-			User managerUser = userService.findNameByUser(managerName);
+			User mabagerUser = userService.findNameByUser(managerName);
 			RestaurantRequestDto restaurantRequestDto= restaurantSeparating(data);
-			Restaurant restaurant = new Restaurant(restaurantRequestDto, managerUser);
+			Restaurant restaurant = new Restaurant(restaurantRequestDto, mabagerUser);
 
 			List<Menu> menus = menusSeparating(data);
 			restaurant.addRestaurant(menus);
@@ -55,7 +55,7 @@ public class RestaurantService {
 		return new AllRestaurantResponseDto(restaurants);
 	}
 
-	public AdminRestaurantResponseDto getAdminRestaurant(Long id, User user) {
+	public AdminRestaurantResponseDto getAdminRestaurant(Long id,User user) {
 		Restaurant restaurant = findRestaurant(id);
 		checkUserRoleAdmin(restaurant,user);
 		return new AdminRestaurantResponseDto(restaurant);
@@ -78,7 +78,6 @@ public class RestaurantService {
 	// IOE글로벌 Exception 추가
 	public List<String[]> separatingFile(List<MultipartFile> multipartFiles) throws IOException {
 		List<String[]> datas = new ArrayList<>();
-		int count =0;
 		for (MultipartFile file : multipartFiles) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()));
 			String line;
@@ -86,8 +85,7 @@ public class RestaurantService {
 			while ((line = br.readLine()) != null) {
 				data = line.split(",");
 			}
-			datas.add(count,data);
-			count++;
+			datas.add(data);
 		}
 		return datas;
 	}
