@@ -12,6 +12,9 @@ import lombok.Getter;
 public enum ResponseCode {
 
 	SUCCESS_REISSUANCETOKEN(OK, "토큰이 재발급되었습니다."),
+	SUCCESS_SIGNUP(OK, "회원가입이 성공하였습니다,"),
+	SUCCESS_LOGOUT(OK, "로그아웃이 성공하였습니다."),
+	SUCCESS_EDITPROFILE(OK, "내정보 수정이 성공하였습니다."),
 
 	CREATE_MENU(OK,"메뉴 생성 완료"),
 	UPDATE_MENU(OK,"메뉴 수정 완료"),
