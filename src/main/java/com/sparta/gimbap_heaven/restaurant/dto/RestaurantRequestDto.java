@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RestaurantRequestDto {
 	@NotBlank
+	private String restaurantAddress;
+
+	@NotBlank
 	private String restaurantName;
 
 	@NotBlank
 	private String restaurantNumber;
 
-	@NotBlank
-	private String restaurantAddress;
 }

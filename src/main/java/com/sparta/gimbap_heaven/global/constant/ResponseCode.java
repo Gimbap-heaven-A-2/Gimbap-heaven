@@ -34,12 +34,13 @@ public enum ResponseCode {
 	SUCCESS_USER(OK,"사용자 조회 완료"),
 	UPDATE_SUCCESS_PASSWORD(OK,"사용자 비밀번호 수정 완료"),
 
+	CREATE_RESTAURANT(OK,"식당 생성완료"),
+	UPDATE_RESTAURANT(OK,"식당 수정 완료"),
+	DELETE_RESTAURANT(OK,"식당 삭제 완료"),
+
 	SUCCESS_LIKES_RESTAURANT(OK, "좋아요 설정 완료"),
 	DELETE_LIKES_RESTAURANT(OK, "좋아요 취소 완료"),
 	SUCCESS_LIKES_RESTAURANT_LIST(OK, "사용자가 좋아요한 가게 리스트 조회 완료");
-
-
-
 
 
 	private final HttpStatus httpStatus;
