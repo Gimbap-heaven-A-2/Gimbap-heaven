@@ -57,7 +57,10 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다"),
     INVALID_SUCCESS_PASSWORD(HttpStatus.BAD_REQUEST,"일치하는 비밀번호가 있습니다"),
 
-    DIFFERENT_RESTAURANT_IN_CART(HttpStatus.BAD_REQUEST, "동일한 가게의 메뉴만 담을 수 있습니다.");
+    DIFFERENT_RESTAURANT_IN_CART(HttpStatus.BAD_REQUEST, "동일한 가게의 메뉴만 담을 수 있습니다."),
+
+    ALREADY_LIKE_RESTAURANT(HttpStatus.BAD_REQUEST, "이미 좋아하는 가게입니다."),
+    NON_LIKES_RESTAURANT(HttpStatus.BAD_REQUEST, "좋아요 설정이 되어 있지 않은 가게입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
