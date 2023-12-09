@@ -10,4 +10,5 @@ import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
 public interface RestaurantRepository extends JpaRepository<Restaurant,Long> {
 
 
+
 }
