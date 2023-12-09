@@ -1,6 +1,22 @@
 package com.sparta.gimbap_heaven.restaurant.service;
 
-import static com.sparta.gimbap_heaven.global.constant.ErrorCode.*;
+import com.sparta.gimbap_heaven.global.exception.ApiException;
+import com.sparta.gimbap_heaven.menu.entity.Menu;
+import com.sparta.gimbap_heaven.restaurant.dto.AdminRestaurantResponseDto;
+import com.sparta.gimbap_heaven.restaurant.dto.AllRestaurantResponseDto;
+import com.sparta.gimbap_heaven.restaurant.dto.ManagerLikeResponseDto;
+import com.sparta.gimbap_heaven.restaurant.dto.RestaurantRequestDto;
+import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
+import com.sparta.gimbap_heaven.restaurant.repository.RestaurantRepository;
+import com.sparta.gimbap_heaven.user.Entity.Like;
+import com.sparta.gimbap_heaven.user.Entity.User;
+import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
+import com.sparta.gimbap_heaven.user.service.LikeService;
+import com.sparta.gimbap_heaven.user.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,22 +24,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sparta.gimbap_heaven.restaurant.dto.*;
-import com.sparta.gimbap_heaven.user.Entity.Like;
-import com.sparta.gimbap_heaven.user.service.LikeService;
-import lombok.RequiredArgsConstructor;
-import org.apache.catalina.Manager;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.sparta.gimbap_heaven.global.exception.ApiException;
-import com.sparta.gimbap_heaven.menu.entity.Menu;
-import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
-import com.sparta.gimbap_heaven.restaurant.repository.RestaurantRepository;
-import com.sparta.gimbap_heaven.user.Entity.User;
-import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
-import com.sparta.gimbap_heaven.user.service.UserService;
+import static com.sparta.gimbap_heaven.global.constant.ErrorCode.INVALID_RESTAURANT;
+import static com.sparta.gimbap_heaven.global.constant.ErrorCode.INVALID_USER;
 
 @Service
 @RequiredArgsConstructor
