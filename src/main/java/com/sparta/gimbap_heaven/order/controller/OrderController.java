@@ -69,7 +69,7 @@ public class OrderController {
         return ResponseEntity.status(DONE_ORDERED.getHttpStatus()).body(new SuccessResponse(DONE_ORDERED));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{user_id}")
     public ResponseEntity<?> getOrderedList(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<OrderResponseDto> responseList = orderService.getOrderedList(id, userDetails.getUser());
         return ResponseEntity.status(SUCCESS_ORDERS_IS_ORDERED.getHttpStatus()).body(new SuccessResponse(SUCCESS_ORDERS_IS_ORDERED, responseList));
