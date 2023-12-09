@@ -9,12 +9,11 @@ import lombok.Data;
 @AllArgsConstructor
 public class BasketRequestDto {
 
+    @NotNull
+    private Long restaurant_id;
 
     @NotNull
     private Long menu_id;
-
-    @NotNull
-    private Long restaurant_id;
 
     @NotNull
     @Min(value = 1, message = "최소 한 개 이상 주문해야 합니다.")

@@ -72,7 +72,12 @@ public class OrderService {
         User orderUser = userService.findUser(order.getUser().getId());
         checkUserOrRole(user, orderUser);
 
-        menuService.findMenu(requestDto.getMenu_id());
+        Restaurant restaurant = restaurantService.findRestaurant(requestDto.getRestaurant_id());
+        Menu menu = menuService.findMenu(requestDto.getMenu_id());
+
+        if (!restaurant.getMenus().contains(menu)) {
+            throw new ApiException(ErrorCode.INVALID_MENU_IN_RESTAURANT);
+        }
 
         for (Basket basket : order.getBaskets()) {
             if (Objects.equals(basket.getMenu().getId(), requestDto.getMenu_id())) {
