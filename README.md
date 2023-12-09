@@ -75,7 +75,7 @@
   https://www.notion.so/01332b2afe7146b8948594eb55a90d0c?v=2429f8cfe014410aa2802b0591d31938&pvs=4
 
 - ERD
-  ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/5076df45-7a2d-4138-9ae0-eeaf64b31ef2/Untitled.png)
+- ![Untitled](https://github.com/Gimbap-heaven-A-2/Gimbap-heaven/assets/146637795/c26d507d-474b-4bac-afc0-0d950a481b22)
 
 - 와이어프레임
   https://www.figma.com/embed?embed_host=notion&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FZk4Rh1dka1oJyOTYF8CPgQ%2Fkimbab-heaven%3Ftype%3Ddesign%26mode%3Ddesign%26t%3DAMZF09iqB2zMYaW6-1
