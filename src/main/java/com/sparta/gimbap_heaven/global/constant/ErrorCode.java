@@ -49,9 +49,9 @@ public enum ErrorCode {
 
     INVALID_ORDER(HttpStatus.NOT_FOUND,"일치하는 오더가 없습니다."),
 
-    INVALID_MADE(HttpStatus.BAD_REQUEST,"작성자가 아닙니다"),
+    INVALID_MADE(HttpStatus.NOT_FOUND,"작성자가 아닙니다"),
 
-    INVALID_USER_CHECK(HttpStatus.BAD_REQUEST,"사용자가 아닙니다"),
+    INVALID_USER_CHECK(HttpStatus.NOT_FOUND,"사용자가 아닙니다"),
 
     INVALID_RESTAURANT(HttpStatus.NOT_FOUND,"일치하는 식당이 없습니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다"),
