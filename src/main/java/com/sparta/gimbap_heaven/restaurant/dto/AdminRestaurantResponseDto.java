@@ -14,10 +14,13 @@ public class AdminRestaurantResponseDto {
 
 	private final Double restaurantMoney;
 
+	private final String userName;
+
 	public AdminRestaurantResponseDto(Restaurant restaurant) {
 		this.restaurantName = restaurant.getRestaurantName();
 		this.restaurantNumber = restaurant.getRestaurantNumber();
 		this.restaurantAddress = restaurant.getRestaurantAddress();
 		this.restaurantMoney = restaurant.getRestaurantMoney();
+		this.userName = restaurant.getUser().getUsername();
 	}
 }
