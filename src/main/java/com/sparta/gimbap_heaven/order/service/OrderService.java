@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -145,7 +147,20 @@ public class OrderService {
 
         User orderedUser = userService.findUser(user.getId());
         orderedUser.useMoney(order.getTotalPrice());
+
+        Restaurant restaurant = order.getRestaurant();
+        restaurant.saveMoney(order.getTotalPrice());
+
         order.updateIsOrdered(true);
+    }
+
+    public List<OrderResponseDto> getOrderedList(Long id, User user) {
+        User findUser = userService.findUser(id);
+        checkUserOrRole(user, findUser);
+
+        List<Order> all = orderRepository.findAllByUserAndIsOrdered(findUser, true);
+
+        return all.stream().map(OrderResponseDto::of).toList();
     }
 
     private static void checkUserOrRole(User loginUser, User orderUser) {
@@ -153,5 +168,4 @@ public class OrderService {
             throw new ApiException(ErrorCode.INVALID_USER);
         }
     }
-
 }

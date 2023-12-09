@@ -53,14 +53,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
+    @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> illegalArgumentExceptionHandler(IllegalArgumentException ex) {
         log.error(ex.getMessage());
-        log.info(INVALID_VALUE.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(
                 new ErrorResponse(
                         INVALID_VALUE.getHttpStatus().value(),
-                        INVALID_VALUE.getMessage())
+                        ex.getMessage())
         );
     }
 
