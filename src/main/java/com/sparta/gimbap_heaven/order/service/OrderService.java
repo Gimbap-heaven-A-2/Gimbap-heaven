@@ -38,8 +38,12 @@ public class OrderService {
 
     @Transactional
     public void saveInCart(BasketRequestDto requestDto, User user) {
+        Restaurant restaurant = restaurantService.findRestaurant(requestDto.getRestaurant_id());
         Menu menu = menuService.findMenu(requestDto.getMenu_id());
-        Restaurant restaurant = restaurantService.findRestaurant(menu.getRestaurant().getId());
+
+        if (!restaurant.getMenus().contains(menu)) {
+            throw new ApiException(ErrorCode.INVALID_MENU_IN_RESTAURANT);
+        }
 
         Order order = orderRepository.findByUserAndIsOrdered(user, false).orElseGet(
                 () -> new Order(user, restaurant)
