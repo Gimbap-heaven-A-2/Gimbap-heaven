@@ -1,18 +1,6 @@
 package com.sparta.gimbap_heaven.restaurant.service;
 
-import com.sparta.gimbap_heaven.global.exception.ApiException;
-import com.sparta.gimbap_heaven.menu.entity.Menu;
-import com.sparta.gimbap_heaven.restaurant.dto.AdminRestaurantResponseDto;
-import com.sparta.gimbap_heaven.restaurant.dto.AllRestaurantResponseDto;
-import com.sparta.gimbap_heaven.restaurant.dto.RestaurantRequestDto;
-import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
-import com.sparta.gimbap_heaven.restaurant.repository.RestaurantRepository;
-import com.sparta.gimbap_heaven.user.Entity.User;
-import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
-import com.sparta.gimbap_heaven.user.service.UserService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import static com.sparta.gimbap_heaven.global.constant.ErrorCode.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,28 +8,40 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sparta.gimbap_heaven.global.constant.ErrorCode.INVALID_RESTAURANT;
-import static com.sparta.gimbap_heaven.global.constant.ErrorCode.INVALID_USER;
+import com.sparta.gimbap_heaven.restaurant.dto.*;
+import com.sparta.gimbap_heaven.user.Entity.Like;
+import com.sparta.gimbap_heaven.user.service.LikeService;
+import lombok.RequiredArgsConstructor;
+import org.apache.catalina.Manager;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.sparta.gimbap_heaven.global.exception.ApiException;
+import com.sparta.gimbap_heaven.menu.entity.Menu;
+import com.sparta.gimbap_heaven.restaurant.entity.Restaurant;
+import com.sparta.gimbap_heaven.restaurant.repository.RestaurantRepository;
+import com.sparta.gimbap_heaven.user.Entity.User;
+import com.sparta.gimbap_heaven.user.Entity.UserRoleEnum;
+import com.sparta.gimbap_heaven.user.service.UserService;
 
 @Service
+@RequiredArgsConstructor
 public class RestaurantService {
 	private final RestaurantRepository restaurantRepository;
 	private final UserService userService;
+	private final LikeService likeService;
 
-	public RestaurantService(RestaurantRepository restaurantRepository, UserService userService) {
-		this.restaurantRepository = restaurantRepository;
-		this.userService = userService;
-	}
 
-	public void createRestaurant(List<MultipartFile> files, User user) throws IOException {
+	public void createRestaurant(List<MultipartFile> files, User user) throws Exception {
 		checkUserRoleAdmin(user);
 		List<String[]> datas = separatingFile(files);
 		for (String[] data: datas) {
 			String managerName = data[0];
 
-			User mabagerUser = userService.findNameByUser(managerName);
+			User manager = userService.findNameByUser(managerName);
 			RestaurantRequestDto restaurantRequestDto= restaurantSeparating(data);
-			Restaurant restaurant = new Restaurant(restaurantRequestDto, mabagerUser);
+			Restaurant restaurant = new Restaurant(restaurantRequestDto, manager);
 
 			List<Menu> menus = menusSeparating(data);
 			restaurant.addRestaurant(menus);
@@ -111,6 +111,43 @@ public class RestaurantService {
 		return menus;
 	}
 
+	@Transactional
+	public void likeRestaurant(Long userId, Long restaurantId, User user) {
+		Restaurant restaurant = findRestaurant(restaurantId);
+		User saveUser = userService.findUser(userId);
+
+		checkUserRole(saveUser, user);
+		likeService.findLikeByUserAndRestaurantForSave(restaurant, saveUser);
+	}
+
+	@Transactional
+	public void cancelLikeRestaurant(Long userId, Long restaurantId, User user) {
+		Restaurant restaurant = findRestaurant(restaurantId);
+		User canceluser = userService.findUser(userId);
+
+		checkUserRole(canceluser, user);
+		likeService.cancelLike(restaurant, canceluser);
+
+	}
+
+	public ManagerLikeResponseDto getLikesByAdmin(Long restaurantId, User user) {
+		Restaurant restaurant = findRestaurant(restaurantId);
+		checkUserRoleAdmin(restaurant, user);
+
+		List<Like> likes = likeService.getListByRestaurant(restaurant);
+		List<String> names = new ArrayList<>();
+		for (Like like : likes) {
+			names.add(like.getUser().getUsername());
+		}
+
+		return new ManagerLikeResponseDto(restaurant.getRestaurantName(), names);
+	}
+
+	private void checkUserRole(User saveUser, User user) {
+		if (!saveUser.getUsername().equals(user.getUsername())) {
+			throw new ApiException(INVALID_USER);
+		}
+	}
 
 	public Restaurant findRestaurant(Long id){
 		return restaurantRepository.findById(id).orElseThrow(
@@ -127,5 +164,4 @@ public class RestaurantService {
 			&& (!user.getRole().equals(UserRoleEnum.ADMIN)))
 			throw new ApiException(INVALID_USER);
 	}
-
 }

@@ -82,24 +82,16 @@ public class UserController {
 
     }
 
-    @PostMapping("/users/{id}/likes/{restaurant_id}")
-    public ResponseEntity<SuccessResponse> likeRestaurant(@PathVariable Long id, @PathVariable Long restaurant_id,
-                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        userService.likeRestaurant(id, restaurant_id, userDetails.getUser());
-        return ResponseEntity.status(SUCCESS_LIKES_RESTAURANT.getHttpStatus()).body(new SuccessResponse(SUCCESS_LIKES_RESTAURANT));
-    }
-
-    @DeleteMapping("/users/{id}/likes/{restaurant_id}")
-    public ResponseEntity<SuccessResponse> cancelLikeRestaurant(@PathVariable Long id, @PathVariable Long restaurant_id,
-                                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        userService.cancelLikeRestaurant(id, restaurant_id, userDetails.getUser());
-        return ResponseEntity.status(DELETE_LIKES_RESTAURANT.getHttpStatus()).body(new SuccessResponse(DELETE_LIKES_RESTAURANT));
-    }
 
     @GetMapping("/users/{id}/likes")
     public ResponseEntity<?> getLikesList(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         LikeResponseDto response = userService.getLikeRestaurantList(id, userDetails.getUser());
+        return ResponseEntity.status(SUCCESS_LIKES_RESTAURANT_LIST.getHttpStatus()).body(new SuccessResponse(SUCCESS_LIKES_RESTAURANT_LIST, response));
+    }
+
+    @GetMapping("/users/likes/admin")
+    public ResponseEntity<?> getLikesListByAdmin(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<LikeResponseDto> response = userService.getLikeRestaurantListByAdmin(userDetails.getUser());
         return ResponseEntity.status(SUCCESS_LIKES_RESTAURANT_LIST.getHttpStatus()).body(new SuccessResponse(SUCCESS_LIKES_RESTAURANT_LIST, response));
     }
 
