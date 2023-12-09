@@ -27,6 +27,7 @@ public enum ResponseCode {
 	DELETE_CART(OK, "장바구니 전체 삭제 완료"),
 	SUCCESS_BASKET_IN_CART(OK, "장바구니 조회 완료"),
 	DONE_ORDERED(OK, "주문 완료"),
+	SUCCESS_ORDERS_IS_ORDERED(OK, "주문 목록 조회 완료"),
 
 	CREATE_REVIEW(OK,"리뷰 생성 완료"),
 	UPDATE_REVIEW(OK,"리뷰 수정 완료"),
