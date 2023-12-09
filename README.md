@@ -59,3 +59,4 @@
  ![Untitled](https://github.com/Gimbap-heaven-A-2/Gimbap-heaven/assets/146637795/c26d507d-474b-4bac-afc0-0d950a481b22)
 
 ### [와이어프레임](https://www.figma.com/embed?embed_host=notion&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FZk4Rh1dka1oJyOTYF8CPgQ%2Fkimbab-heaven%3Ftype%3Ddesign%26mode%3Ddesign%26t%3DAMZF09iqB2zMYaW6-1)
+
