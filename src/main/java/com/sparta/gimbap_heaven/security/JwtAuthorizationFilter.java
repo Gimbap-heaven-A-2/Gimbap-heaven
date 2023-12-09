@@ -132,7 +132,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private void setResponse(HttpServletResponse response, ErrorCode errorCode) {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.setStatus(errorCode.getHttpStatus().value());
         response.setCharacterEncoding("utf-8");
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getHttpStatus(), errorCode.getMessage());
 

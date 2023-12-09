@@ -77,7 +77,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(200);
         response.setCharacterEncoding("utf-8");
         PrintWriter writer = response.getWriter();
-        writer.println("200 Ok");
+        writer.println("200 : Ok");
         writer.println("로그인 성공!");
     }
 
@@ -85,9 +85,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.info("로그인 실패");
 
-        response.setStatus(400);
+        response.setStatus(404);
         response.setCharacterEncoding("utf-8");
         PrintWriter writer = response.getWriter();
+        writer.println(" 404 : NOT FOUND");
         writer.println("회원을 찾을 수 없습니다.");
 
     }

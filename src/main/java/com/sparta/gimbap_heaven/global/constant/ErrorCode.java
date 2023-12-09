@@ -13,9 +13,9 @@ public enum ErrorCode {
     // 예외처리를 위해 만든 클래스지만 잘 모릅니다.
 
     // Token Exception
-    UNKNOWN_ERROR_NOT_EXIST_REFRESHTOKEN(HttpStatus.BAD_REQUEST, "리프레시 토큰이 존재하지 않습니다. 다시 로그인해주세요."),
+    UNKNOWN_ERROR_NOT_EXIST_REFRESHTOKEN(HttpStatus.NOT_FOUND, "리프레시 토큰이 존재하지 않습니다. 다시 로그인해주세요."),
 
-    UNKNOWN_ERROR_NOT_EXIST_ACCESSTOKEN(HttpStatus.BAD_REQUEST, "액세스 토큰이 존재하지 않습니다. 다시 로그인해주세요."),
+    UNKNOWN_ERROR_NOT_EXIST_ACCESSTOKEN(HttpStatus.NOT_FOUND, "액세스 토큰이 존재하지 않습니다. 다시 로그인해주세요."),
 
     EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 토큰입니다. 다시 로그인하세요."),
 
@@ -24,9 +24,9 @@ public enum ErrorCode {
     // System Exception
     INVALID_USER(HttpStatus.FORBIDDEN,"권한이 없습니다."),
 
-    INVALID_MANAGER(HttpStatus.BAD_REQUEST, "해당 매니저가 존재하지 않습니다."),
+    INVALID_MANAGER(HttpStatus.NOT_FOUND, "해당 매니저가 존재하지 않습니다."),
 
-    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "일치하는 토큰이 없습니다."),
+    INVALID_TOKEN(HttpStatus.NOT_FOUND, "일치하는 토큰이 없습니다."),
 
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST,"잘못된 입력값입니다."),
 
